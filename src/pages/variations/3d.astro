@@ -1,0 +1,361 @@
+---
+import Variant from '../../layouts/Variant.astro';
+import { getProducts, inr, minPrice, telLink, directionsLink, store } from '../../lib/site';
+const all = await getProducts();
+const from = (c: 'tv' | 'headphones' | 'soundbars') => inr(minPrice(all.filter(p => p.category === c)));
+const tvCount = all.filter(p => p.category === 'tv').length;
+---
+<Variant title="3D" variant="3d" bodyClass="v3">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <img class="v3-fallback" src="/images/products/k-85xr90.webp" alt="" aria-hidden="true" />
+
+  <header class="v3-head">
+    <a href="/variations/3d/" class="v3-brand"><b>RDL</b><span>Sony Centre · HSR Layout</span></a>
+    <nav class="v3-nav" aria-label="Primary"><a href="/televisions/">Televisions</a><a href="/soundbars/">Soundbars</a><a href="/headphones/">Headphones</a></nav>
+    <span class="v3-auth"><b>SONY</b><i></i>Authorised<br />Dealer</span>
+    <a class="v3-btn v3-btn--line" href={telLink}>Call now</a>
+  </header>
+
+  <main class="v3-story">
+    <section class="v3-step" data-step="0">
+      <div class="v3-copy">
+        <p class="v3-kicker">Authorised Sony dealer · HSR Layout, Bengaluru</p>
+        <h1>The Sony Centre,<br /><span>HSR Layout.</span></h1>
+        <p class="v3-lede">Scroll to explore BRAVIA televisions, soundbars and headphones, then come and see them in person.</p>
+        <p class="v3-row"><a class="v3-btn" href={directionsLink} target="_blank" rel="noopener">Visit the showroom</a><a class="v3-btn v3-btn--line" href={telLink}>Call {store.phoneDisplay}</a></p>
+      </div>
+      <p class="v3-scroll" aria-hidden="true">Scroll</p>
+    </section>
+
+    <section class="v3-step v3-step--right" data-step="1">
+      <div class="v3-copy">
+        <p class="v3-kicker">01 · Televisions</p>
+        <h2>BRAVIA,<br />32 to 98 inches.</h2>
+        <p class="v3-lede">{tvCount} models in store, from HD Ready to Mini LED and OLED. From {from('tv')}.</p>
+        <a class="v3-link" href="/televisions/">Explore televisions →</a>
+      </div>
+    </section>
+
+    <section class="v3-step v3-step--right" data-step="2">
+      <div class="v3-copy">
+        <p class="v3-kicker">02 · Soundbars &amp; home theatre</p>
+        <h2>Room-filling sound,<br />under the screen.</h2>
+        <p class="v3-lede">From a 2.1 soundbar with a wireless subwoofer to the HT-A3000 with 360 Spatial Sound Mapping. From {from('soundbars')}.</p>
+        <a class="v3-link" href="/soundbars/">Explore soundbars →</a>
+      </div>
+    </section>
+
+    <section class="v3-step" data-step="3">
+      <div class="v3-copy">
+        <p class="v3-kicker">03 · Headphones</p>
+        <h2>Quiet the city.</h2>
+        <p class="v3-lede">WH-1000XM5 noise cancelling, ULT WEAR bass, the studio-standard MDR-7506 and more. From {from('headphones')}.</p>
+        <a class="v3-link" href="/headphones/">Explore headphones →</a>
+      </div>
+    </section>
+
+    <section class="v3-step v3-step--center" data-step="4">
+      <div class="v3-copy">
+        <div class="v3-rudy" data-mascot="contact"></div>
+        <p class="v3-kicker">Visit the showroom</p>
+        <h2>See it in person.</h2>
+        <p class="v3-lede">{store.streetAddress}, {store.locality} {store.postalCode}<br />Open {store.hoursText} · {store.phoneDisplay}</p>
+        <p class="v3-row v3-row--center">
+          <a class="v3-btn" href={directionsLink} target="_blank" rel="noopener">Get directions</a>
+          <a class="v3-btn v3-btn--line" href={telLink}>Call now</a>
+          <a class="v3-btn v3-btn--line" href={`https://wa.me/${store.whatsapp}`} target="_blank" rel="noopener">WhatsApp</a>
+        </p>
+        <span class="v3-auth v3-auth--lg"><b>SONY</b><i></i>Authorised<br />Dealer</span>
+      </div>
+    </section>
+  </main>
+
+  <div class="v3-progress" aria-hidden="true"><i id="v3bar"></i></div>
+
+  <script>
+    import * as THREE from 'three';
+    import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import '../../scripts/mascot.js';
+
+    document.querySelectorAll<HTMLElement>('[data-mascot]').forEach(el => { el.innerHTML = (window as any).Rudy.svg(el.dataset.mascot); });
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canvas = document.getElementById('stage') as HTMLCanvasElement;
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    } catch (e) {
+      document.body.classList.add('no-webgl');
+      throw e;
+    }
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const scene = new THREE.Scene();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+
+    /* ---------- lights & floor ---------- */
+    const key = new THREE.DirectionalLight(0xffffff, 2.2);
+    key.position.set(3, 6, 4);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.left = -6; key.shadow.camera.right = 6; key.shadow.camera.top = 6; key.shadow.camera.bottom = -6;
+    key.shadow.radius = 6;
+    scene.add(key);
+    scene.add(new THREE.HemisphereLight(0xfff6ef, 0xe8ddd5, 0.6));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.12 }));
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    /* ---------- materials ---------- */
+    const black = new THREE.MeshPhysicalMaterial({ color: 0x141416, roughness: 0.35, metalness: 0.5, clearcoat: 0.6, clearcoatRoughness: 0.25 });
+    const fabric = new THREE.MeshStandardMaterial({ color: 0x1c1c1f, roughness: 0.95, metalness: 0 });
+    const satin = new THREE.MeshStandardMaterial({ color: 0x26262a, roughness: 0.6, metalness: 0.2 });
+    const copper = new THREE.MeshStandardMaterial({ color: 0xc08a65, roughness: 0.3, metalness: 0.9 });
+
+    /* ---------- TV with a live BRAVIA-style screen ---------- */
+    const screenMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uMix: { value: 0 } },
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+      fragmentShader: `
+        varying vec2 vUv; uniform float uTime; uniform float uMix;
+        float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+        float n(vec2 p){ vec2 i=floor(p), f=fract(p); vec2 u=f*f*(3.-2.*f);
+          return mix(mix(h(i),h(i+vec2(1,0)),u.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x), u.y); }
+        float fbm(vec2 p){ float v=0., a=.5; for(int i=0;i<5;i++){ v+=a*n(p); p*=2.02; a*=.5; } return v; }
+        void main(){
+          vec2 p = vUv * vec2(3.2, 1.8);
+          float t = uTime * .08;
+          vec2 q = vec2(fbm(p + t), fbm(p + vec2(5.2,1.3) - t));
+          vec2 r = vec2(fbm(p + 3.5*q + vec2(1.7,9.2) + t*1.3), fbm(p + 3.5*q + vec2(8.3,2.8) - t));
+          float f = fbm(p + 3.0*r);
+          vec3 warmA = vec3(.22,.0,.04), warmB = vec3(.92,.28,.1), warmC = vec3(1.,.78,.45);
+          vec3 coolA = vec3(.01,.03,.14), coolB = vec3(.08,.32,.9), coolC = vec3(.55,.85,1.);
+          vec3 a = mix(warmA, coolA, uMix), b = mix(warmB, coolB, uMix), c = mix(warmC, coolC, uMix);
+          vec3 col = mix(a, b, clamp(f*f*2.2, 0., 1.));
+          col = mix(col, c, clamp(length(q)*.55 - .25, 0., 1.));
+          col *= .4 + 1.05*f;
+          float vig = smoothstep(1.2, .2, length(vUv - .5) * 1.4);
+          gl_FragColor = vec4(col * (.7 + .4*vig), 1.);
+        }`
+    });
+
+    const tv = new THREE.Group();
+    const W = 3.2, H = 1.84;
+    const body = new THREE.Mesh(new RoundedBoxGeometry(W, H, 0.05, 4, 0.02), black);
+    body.castShadow = true;
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(W - 0.05, H - 0.05), screenMat);
+    screen.position.z = 0.026;
+    const back = new THREE.Mesh(new RoundedBoxGeometry(W * 0.62, H * 0.6, 0.12, 4, 0.04), satin);
+    back.position.z = -0.07; back.castShadow = true;
+    tv.add(body, screen, back);
+    [-1, 1].forEach(s => {
+      const leg = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.36, 0.34, 2, 0.02), black);
+      leg.position.set(s * W * 0.42, -H / 2 - 0.1, 0.02);
+      leg.rotation.z = s * 0.18;
+      leg.castShadow = true;
+      tv.add(leg);
+    });
+    tv.position.y = H / 2 + 0.26;
+    scene.add(tv);
+
+    /* ---------- soundbar, subwoofer, sound rings ---------- */
+    const bar = new THREE.Group();
+    const barBody = new THREE.Mesh(new RoundedBoxGeometry(2.3, 0.11, 0.15, 4, 0.045), fabric);
+    barBody.castShadow = true;
+    const grille = new THREE.Mesh(new THREE.BoxGeometry(2.18, 0.004, 0.11), satin);
+    grille.position.y = 0.056;
+    const led = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.012, 0.004), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    led.position.set(0.9, 0, 0.077);
+    bar.add(barBody, grille, led);
+    bar.position.set(0, 0.056, 0.62);
+    scene.add(bar);
+
+    const sub = new THREE.Mesh(new RoundedBoxGeometry(0.46, 0.66, 0.5, 4, 0.05), fabric);
+    sub.position.set(2.25, 0.33, 0.1);
+    sub.castShadow = true;
+    const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.02, 48), satin);
+    cone.rotation.x = Math.PI / 2; cone.position.set(2.25, 0.3, 0.355);
+    scene.add(sub, cone);
+
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xc08a65, transparent: true, opacity: 0 });
+    const rings = Array.from({ length: 4 }, (_, i) => {
+      const m = new THREE.Mesh(new THREE.TorusGeometry(1, 0.004, 8, 96), ringMat.clone());
+      m.position.set(0, 0.06, 0.64); m.rotation.x = -Math.PI / 2; m.userData.phase = i / 4;
+      scene.add(m); return m;
+    });
+
+    /* ---------- headphones ---------- */
+    const hp = new THREE.Group();
+    const band = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.04, 20, 80, Math.PI), satin);
+    band.castShadow = true;
+    const cushionTop = new THREE.Mesh(new THREE.TorusGeometry(0.47, 0.03, 16, 60, Math.PI * 0.5), fabric);
+    cushionTop.rotation.z = Math.PI * 0.25;
+    hp.add(band, cushionTop);
+    [-1, 1].forEach(s => {
+      const cup = new THREE.Group();
+      const shell = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.12, 8, 32), black);
+      shell.scale.set(1, 1, 0.55);
+      shell.castShadow = true;
+      const pad = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.06, 16, 48), fabric);
+      pad.scale.set(1, 1.25, 1);
+      pad.position.z = s * -0.0; pad.rotation.y = Math.PI / 2;
+      const accent = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.008, 8, 64), copper);
+      accent.rotation.y = Math.PI / 2; accent.position.x = s * 0.06; accent.scale.set(1, 1.3, 1);
+      shell.rotation.y = Math.PI / 2;
+      cup.add(shell, pad, accent);
+      cup.position.set(s * 0.5, -0.12, 0);
+      hp.add(cup);
+    });
+    hp.position.set(-3.4, 1.2, 1.4);
+    hp.scale.setScalar(0.55);
+    hp.rotation.set(0.1, 0.6, 0);
+    scene.add(hp);
+
+    /* ---------- camera path, one shot per section ---------- */
+    type Shot = { pos: [number, number, number]; look: [number, number, number]; mix: number };
+    const shots: Shot[] = [
+      { pos: [-1.7, 1.45, 7.6], look: [-1.6, 1.0, 0], mix: 0 },
+      { pos: [3.4, 1.55, 5.4], look: [1.8, 1.05, 0], mix: 0.2 },
+      { pos: [2.3, 0.5, 4.4], look: [1.25, 0.42, 0.6], mix: 0.5 },
+      { pos: [-3.0, 1.4, 3.7], look: [-3.95, 1.2, 1.4], mix: 0.9 },
+      { pos: [0, 1.9, 10.5], look: [0, 0.35, 0], mix: 0.3 }
+    ];
+    const ease = (t: number) => t * t * (3 - 2 * t);
+    const tmpPos = new THREE.Vector3(), tmpLook = new THREE.Vector3();
+    const camPos = new THREE.Vector3(...shots[0].pos), camLook = new THREE.Vector3(...shots[0].look), tmpLook2 = new THREE.Vector3();
+    let mixNow = 0;
+
+    function shotAt(p: number) {
+      const s = Math.min(shots.length - 1.0001, Math.max(0, p * (shots.length - 1)));
+      const i = Math.floor(s), t = ease(s - i), a = shots[i], b = shots[i + 1];
+      tmpPos.set(...a.pos).lerp(new THREE.Vector3(...b.pos), t);
+      tmpLook.set(...a.look).lerp(new THREE.Vector3(...b.look), t);
+      return { mix: a.mix + (b.mix - a.mix) * t, seg: s };
+    }
+
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    addEventListener('mousemove', e => { mouse.tx = e.clientX / innerWidth - 0.5; mouse.ty = e.clientY / innerHeight - 0.5; }, { passive: true });
+
+    function resize() {
+      const w = innerWidth, h = innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.fov = w / h < 0.8 ? 46 : 32;
+      camera.updateProjectionMatrix();
+    }
+    addEventListener('resize', resize);
+    resize();
+
+    const steps = Array.from(document.querySelectorAll<HTMLElement>('.v3-step'));
+    const barEl = document.getElementById('v3bar')!;
+    const clock = new THREE.Clock();
+    let visible = true;
+    document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
+
+    function frame() {
+      requestAnimationFrame(frame);
+      if (!visible) return;
+      const dt = Math.min(0.1, clock.getDelta());
+      const t = clock.elapsedTime;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const p = max > 0 ? scrollY / max : 0;
+      barEl.style.transform = `scaleX(${p})`;
+      const { mix, seg } = shotAt(p);
+      const k = reduced ? 1 : 1 - Math.exp(-dt * 3.2); // time-based easing: same feel at any frame rate
+      camPos.lerp(tmpPos, k); camLook.lerp(tmpLook, k);
+      const km = 1 - Math.exp(-dt * 3); mouse.x += (mouse.tx - mouse.x) * km; mouse.y += (mouse.ty - mouse.y) * km;
+      const portrait = innerWidth / innerHeight < 0.8;
+      const zf = portrait ? 1.6 : 1, xf = portrait ? 0 : 1; // phones: pull back, centre the subject above the copy
+      camera.position.set(camPos.x * (portrait ? 0.25 : 1) + mouse.x * 0.5, camPos.y - mouse.y * 0.3 + (portrait ? 0.2 : 0), camPos.z * zf);
+      tmpLook2.copy(camLook); tmpLook2.x *= xf; if (portrait) tmpLook2.y -= 1.1;
+      camera.lookAt(tmpLook2);
+      mixNow += (mix - mixNow) * k;
+      screenMat.uniforms.uMix.value = mixNow;
+      // headphones join the scene from the audio section onward
+      const hv = Math.min(1, Math.max(0, (seg - 2.2) / 0.7));
+      hp.scale.setScalar(0.55 * ease(hv));
+      hp.visible = hv > 0.001;
+      if (!reduced) {
+        screenMat.uniforms.uTime.value = t;
+        hp.position.y = 1.2 + Math.sin(t * 1.1) * 0.05;
+        hp.rotation.y = 0.5 + Math.sin(t * 0.5) * 0.45;
+        const pulse = 1 + Math.max(0, Math.sin(t * 7)) * 0.012;
+        bar.scale.set(1, pulse, 1); sub.scale.set(pulse, pulse, pulse);
+        const audio = Math.max(0, 1 - Math.abs(seg - 2) * 1.4);
+        rings.forEach(r => {
+          const ph = (t * 0.35 + r.userData.phase) % 1;
+          r.scale.setScalar(0.3 + ph * 2.6);
+          (r.material as THREE.MeshBasicMaterial).opacity = (1 - ph) * 0.55 * audio;
+        });
+      }
+      // active text panel
+      const active = Math.round(seg);
+      steps.forEach((s, i) => s.classList.toggle('is-active', i === active));
+      renderer.render(scene, camera);
+    }
+    frame();
+  </script>
+</Variant>
+
+<style is:global>
+  .v3 { margin: 0; color: #17100f; font: 400 17px/1.55 "SST", "Source Sans 3", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; background: radial-gradient(120% 90% at 70% 30%, #fff 0%, #f8f2ed 45%, #efe6df 100%) fixed; }
+  .v3 a { color: inherit; text-decoration: none; }
+  #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; display: block; }
+  .v3-fallback { display: none; }
+  .no-webgl .v3-fallback { display: block; position: fixed; right: 4vw; top: 22vh; width: 52vw; z-index: 0; }
+
+  .v3-head { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; gap: 30px; height: 72px; padding: 0 clamp(20px, 4vw, 56px); }
+  .v3-brand { display: grid; line-height: 1; } .v3-brand b { font-size: 1.4rem; letter-spacing: .16em; } .v3-brand span { font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: #6b605d; margin-top: 6px; }
+  .v3-nav { display: flex; gap: 28px; margin-left: auto; font-size: .9rem; color: #3b3231; }
+  .v3-nav a:hover { color: #5B0714; }
+  .v3-auth { display: inline-flex; align-items: center; gap: 10px; font-size: .55rem; letter-spacing: .2em; text-transform: uppercase; line-height: 1.35; color: #5B0714; font-weight: 600; }
+  .v3-auth b { font-size: .95rem; letter-spacing: .3em; color: #17100f; }
+  .v3-auth i { width: 1px; height: 24px; background: #9c6a47; }
+  .v3-auth--lg { margin-top: 40px; font-size: .7rem; } .v3-auth--lg b { font-size: 1.5rem; } .v3-auth--lg i { height: 38px; }
+
+  .v3-btn { display: inline-flex; align-items: center; height: 50px; padding: 0 24px; border-radius: 2px; background: #5B0714; color: #fff !important; font-size: .94rem; font-weight: 500; transition: background .3s; }
+  .v3-btn:hover { background: #7a1424; }
+  .v3-btn--line { background: rgba(255, 255, 255, .55); color: #17100f !important; border: 1px solid rgba(23, 16, 15, .2); backdrop-filter: blur(6px); }
+  .v3-btn--line:hover { background: #fff; }
+  .v3-head .v3-btn { height: 40px; padding: 0 18px; font-size: .86rem; }
+
+  .v3-story { position: relative; z-index: 10; pointer-events: none; }
+  .v3-step { min-height: 100vh; display: flex; align-items: center; padding: 0 clamp(20px, 6vw, 96px); position: relative; }
+  .v3-step--right { justify-content: flex-end; }
+  .v3-step--center { justify-content: center; align-items: flex-end; padding-bottom: 110px; text-align: center; }
+  .v3-copy { max-width: 470px; pointer-events: auto; opacity: .15; transform: translateY(30px); transition: opacity .9s ease, transform 1.1s cubic-bezier(.16, 1, .3, 1); }
+  .v3-step.is-active .v3-copy { opacity: 1; transform: none; }
+  .v3-step:not(:first-child) .v3-copy { padding: 34px 36px; background: rgba(255, 255, 255, .62); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .v3-step--center .v3-copy { max-width: 640px; padding: 40px; background: rgba(255, 255, 255, .72); }
+  .v3-kicker { font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: #5B0714; margin: 0 0 20px; font-weight: 500; }
+  .v3 h1, .v3 h2 { font-weight: 300; letter-spacing: -0.03em; line-height: .98; margin: 0 0 24px; }
+  .v3 h1 { font-size: clamp(3rem, 6.4vw, 6.4rem); } .v3 h1 span { color: #9c6a47; }
+  .v3 h2 { font-size: clamp(2.4rem, 4.6vw, 4.4rem); }
+  .v3-lede { color: #5f5553; font-size: clamp(1.02rem, 1.3vw, 1.18rem); margin: 0 0 30px; }
+  .v3-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 0; }
+  .v3-row--center { justify-content: center; }
+  .v3-link { font-weight: 500; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
+  .v3-rudy { width: 86px; margin: -90px auto 16px; }
+  .v3-scroll { position: absolute; left: 50%; bottom: 90px; transform: translateX(-50%); font-size: .7rem; letter-spacing: .3em; text-transform: uppercase; color: #6b605d; }
+  .v3-scroll::after { content: ""; display: block; width: 1px; height: 40px; margin: 10px auto 0; background: linear-gradient(#6b605d, transparent); animation: v3drop 1.8s ease-in-out infinite; }
+  @keyframes v3drop { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+  .v3-progress { position: fixed; left: 0; top: 0; right: 0; height: 2px; z-index: 30; } .v3-progress i { display: block; height: 100%; background: #5B0714; transform-origin: 0 50%; transform: scaleX(0); }
+
+  @media (max-width: 860px) {
+    .v3-nav, .v3-head .v3-auth { display: none; }
+    .v3-head .v3-btn { margin-left: auto; }
+    .v3-step, .v3-step--right { align-items: flex-end; justify-content: flex-start; padding-bottom: 120px; }
+    .v3-copy { background: rgba(255, 255, 255, .78); backdrop-filter: blur(12px); padding: 24px; }
+    .v3-step--center { align-items: center; }
+  }
+</style>

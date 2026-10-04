@@ -1,0 +1,10 @@
+---
+import HomePage from '../../components/HomePage.astro';
+import { colourThemes } from '../../lib/variants';
+
+export function getStaticPaths() {
+  return colourThemes.map(theme => ({ params: { theme } }));
+}
+const { theme } = Astro.params;
+---
+<HomePage theme={theme} variant={theme} />

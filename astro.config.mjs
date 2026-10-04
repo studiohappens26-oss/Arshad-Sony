@@ -5,6 +5,6 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://arshad-sonyhsrlayout.com',
   trailingSlash: 'always',
-  integrations: [sitemap({ filter: page => !page.includes('/admin/') })],
+  integrations: [sitemap({ filter: page => !page.includes('/admin/') && !page.includes('/variations/') })],
   build: { inlineStylesheets: 'auto' }
 });

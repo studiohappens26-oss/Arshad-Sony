@@ -1,0 +1,39 @@
+/* Rudy, the RDL mascot (SVG built in scripts/mascot.js) */
+.rudy { width: 100%; height: auto; overflow: visible; display: block; }
+.rudy .r-shadow { fill: rgba(var(--shadow-rgb, 23, 16, 15), .12); }
+.rudy .r-limb, .rudy .r-leg { fill: none; stroke: #3d0410; stroke-width: 7; stroke-linecap: round; }
+.rudy .r-hand { fill: #e6b08c; }
+.rudy .r-shoe { fill: #2a030b; }
+.rudy .r-ant path { stroke: #c08a65; stroke-width: 2.5; stroke-linecap: round; fill: none; }
+.rudy .r-ant circle { fill: #e6b08c; }
+.rudy .r-ant { transform-origin: 80px 40px; animation: antenna 3s ease-in-out infinite; }
+@keyframes antenna { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+.rudy .r-mouth { fill: none; stroke: #e6b08c; stroke-width: 3; stroke-linecap: round; }
+.rudy .r-eyes { transform-origin: 80px 80px; animation: blink 5s infinite; }
+.rudy .r-eyes--happy path { fill: none; stroke: #f3eee9; stroke-width: 4; stroke-linecap: round; }
+.rudy .r-eyes--happy, .rudy .r-eyes--star { animation: none; }
+.rudy .r-eyes--star path { fill: #e6b08c; animation: twinkle 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes twinkle { 50% { transform: scale(.84) rotate(10deg); } }
+@keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+.rudy .r-bodywrap { transform-origin: 80px 170px; }
+.rudy--wave .r-arm--wave { transform-origin: 136px 92px; animation: waveArm 1.6s ease-in-out infinite; }
+@keyframes waveArm { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-16deg); } 75% { transform: rotate(10deg); } }
+.rudy--bob .r-bodywrap { animation: bob 1.1s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg) translateY(-2px); } }
+.rudy--dance .r-bodywrap { animation: dance .7s ease-in-out infinite alternate; }
+@keyframes dance { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-6px) rotate(3deg); } }
+.rudy--dance .r-arm--danceL { transform-origin: 24px 90px; animation: danceArm .7s ease-in-out infinite alternate; }
+.rudy--dance .r-arm--danceR { transform-origin: 136px 90px; animation: danceArm .7s ease-in-out infinite alternate-reverse; }
+@keyframes danceArm { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
+.rudy--watch .r-bodywrap, .rudy--talk .r-bodywrap, .rudy--wave .r-bodywrap { animation: breathe 3s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: translateY(-2px); } }
+.rudy .r-sw path { fill: none; stroke: #c08a65; stroke-width: 2.5; stroke-linecap: round; animation: wave 1.1s ease-in-out infinite; }
+.rudy .r-sw path:nth-child(2) { animation-delay: .35s; }
+.rudy .r-note { animation: note 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.rudy .r-note.n2 { animation-delay: .85s; } .rudy .r-note.n3 { animation-delay: 1.7s; }
+@keyframes note { 0% { opacity: 0; transform: translateY(12px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
+.rudy .r-spark path { animation: twinkle 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.rudy .r-led { animation: led 1.8s infinite; }
+@keyframes led { 50% { fill: #3ddc84; } }
+
+@keyframes wave { 0%, 100% { opacity: .15; } 50% { opacity: 1; } }

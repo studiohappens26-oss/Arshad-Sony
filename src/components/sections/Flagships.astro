@@ -8,40 +8,49 @@ const blurb: Record<string, string> = {
   'BRAVIA 7': 'Mini LED brightness at a more accessible size and price.',
   'BRAVIA XR': 'Full Array LED with Sony’s XR processor.'
 };
+const n = products.length;
 ---
-<section class="flag" id="flagships" data-section="tv" data-cursor="tv" style={`--n:${products.length}`}>
-  <div class="flag__sticky">
-    <div class="container flag__head">
-      <div>
-        <span class="kicker">In focus</span>
-        <h2 class="h2">The flagships.</h2>
-      </div>
-      <p class="flag__count"><b id="flagNow">01</b> / 0{products.length}</p>
+<section class="flag" id="flagships" data-section="tv" data-cursor="tv">
+  <div class="container flag__head">
+    <div>
+      <span class="kicker">In focus</span>
+      <h2 class="h2">The flagships.</h2>
     </div>
-    <div class="flag__track" id="flagTrack">
-      {products.map(p => (
-        <article class="slide">
-          <div class="slide__img">
-            <img class="ambi" src={p.image} alt="" aria-hidden="true" loading="lazy" />
-            <img src={p.image} alt={p.name} loading="lazy" />
-          </div>
-          <div class="slide__copy">
-            <span class="kicker">{p.series} · {p.panel}</span>
-            <h3>{p.size} inches.</h3>
-            <p class="h3sub">{blurb[p.series ?? ''] ?? ''} {p.cm} cm, {p.resolution}, Google TV.</p>
-            <ul class="slide__specs">
-              <li><span>Model</span>{p.model}</li>
-              <li><span>Panel</span>{p.panel}</li>
-            </ul>
-            <p class="slide__price">{inr(p.price)}{p.mrp ? <s>{inr(p.mrp)}</s> : null}</p>
-            <div class="btn-row">
-              <a class="btn btn--primary" href={waLink(enquiryText(p))} target="_blank" rel="noopener">Enquire now</a>
-              <a class="btn btn--outline" href={productUrl(p)}>Details</a>
-            </div>
-          </div>
-        </article>
-      ))}
+    <div class="flag__ctrl">
+      <button class="flag__arrow" type="button" data-prev aria-label="Previous television">←</button>
+      <p class="flag__count" aria-live="polite"><b data-now>01</b> / 0{n}</p>
+      <button class="flag__arrow" type="button" data-next aria-label="Next television">→</button>
     </div>
-    <div class="container"><div class="flag__bar"><i id="flagBar"></i></div></div>
+  </div>
+  <div class="container carousel" data-carousel data-interval="6000" aria-roledescription="carousel" aria-label="Flagship televisions">
+    {products.map((p, i) => (
+      <article class={`slide${i === 0 ? ' is-on' : ''}`} aria-roledescription="slide" aria-label={`${i + 1} of ${n}`} aria-hidden={i === 0 ? undefined : 'true'}>
+        <div class="slide__img">
+          <img class="ambi" src={p.image} alt="" aria-hidden="true" loading="lazy" />
+          <img src={p.image} alt={p.name} loading="lazy" />
+        </div>
+        <div class="slide__copy">
+          <span class="kicker">{p.series} · {p.panel}</span>
+          <h3>{p.size} inches.</h3>
+          <p class="h3sub">{blurb[p.series ?? ''] ?? ''} {p.cm} cm, {p.resolution}, Google TV.</p>
+          <ul class="slide__specs">
+            <li><span>Model</span>{p.model}</li>
+            <li><span>Panel</span>{p.panel}</li>
+          </ul>
+          <p class="slide__price">{inr(p.price)}{p.mrp ? <s>{inr(p.mrp)}</s> : null}</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href={waLink(enquiryText(p))} target="_blank" rel="noopener" tabindex={i === 0 ? undefined : -1}>Enquire now</a>
+            <a class="btn btn--outline" href={productUrl(p)} tabindex={i === 0 ? undefined : -1}>Details</a>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="container flag__dots" role="group" aria-label="Choose a television">
+    {products.map((p, i) => (
+      <button type="button" class={i === 0 ? 'is-on' : undefined} data-go={i} aria-label={`${p.series} ${p.size} inch`}>
+        <span class="flag__dotlabel">{p.series}</span><i></i>
+      </button>
+    ))}
   </div>
 </section>

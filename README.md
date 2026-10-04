@@ -106,7 +106,27 @@ Do these after launch; they matter most for local search:
 - **Product images are cut out** (transparent WebP) so they sit cleanly on the tiles. When adding products in the CMS, upload a **PNG or WebP with a transparent background**. Otherwise the product shows inside a white box.
   - To cut out a white-background photo yourself, use any background remover, or ImageMagick:
     `convert in.jpg -fuzz 8% -transparent white out.webp`
-- **Effects:** custom cursors per category, Rudy the mascot, a parallax TV glow in the hero, a pinned horizontal "flagships" scroll, line-by-line headline reveals and image parallax.
+- **Effects:** custom cursors per category, Rudy the mascot, a parallax TV glow in the hero, an auto-advancing "flagships" carousel, line-by-line headline reveals and image parallax.
+
+## Design variations
+
+Open **`/variations/`** to compare seven directions. Every variation uses the same content, catalogue, CMS and SEO.
+
+| Variation | URL | What it is |
+| --- | --- | --- |
+| Original | `/` | Light; maroon and copper (the current design) |
+| Minimal | `/variations/minimal/` | White, black type, one product at a time |
+| 3D | `/variations/3d/` | Real-time Three.js scene (TV with a live screen, soundbar, headphones); the camera follows the scroll |
+| Monogram | `/variations/monogram/` | The original colours with blacker text and a subtle RDL monogram pattern background |
+| Champagne | `/variations/champagne/` | Warm white, black type, gold accents |
+| Cobalt | `/variations/cobalt/` | White and electric blue |
+| Sage | `/variations/sage/` | Ivory and forest green |
+
+- **Switching between them:** a bar at the bottom of the screen switches designs.
+- **Colour themes follow you:** a theme stays on while you browse the rest of the site (`?theme=off` resets it).
+- **How themes work:** they live in `src/styles/themes.css` and only change design tokens. To make one the default, move its values into `:root` in `global.css`.
+- **Hidden from Google:** variation pages are excluded from the sitemap and `robots.txt` and marked `noindex`.
+- **No horizontal scrolling:** the site doesn't use sideways scrolling anywhere. The flagships section is an auto-advancing carousel that pauses on hover and supports swipe and arrow keys.
 
 ## Calls to action
 

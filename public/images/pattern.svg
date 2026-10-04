@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <!-- RDL monogram tile: screen + R + sound arcs, drawn very faintly in maroon -->
+  <g fill="none" stroke="#5B0714" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" opacity=".085">
+    <g transform="translate(14 16) scale(.62)">
+      <rect x="1.5" y="4" width="45" height="32" rx="6"/><path d="M19 44h10M24 36v8"/>
+      <path d="M14 29V12h7.5a5 5 0 0 1 0 10H14M20 22l6 7"/><path d="M31.5 16.5a4 4 0 0 1 0 8"/><path d="M35.5 13a9 9 0 0 1 0 15"/>
+    </g>
+    <g transform="translate(74 76) scale(.62)">
+      <rect x="1.5" y="4" width="45" height="32" rx="6"/><path d="M19 44h10M24 36v8"/>
+      <path d="M14 29V12h7.5a5 5 0 0 1 0 10H14M20 22l6 7"/><path d="M31.5 16.5a4 4 0 0 1 0 8"/><path d="M35.5 13a9 9 0 0 1 0 15"/>
+    </g>
+  </g>
+  <g fill="#9c6a47" opacity=".16"><circle cx="90" cy="30" r="1.1"/><circle cx="30" cy="90" r="1.1"/></g>
+</svg>

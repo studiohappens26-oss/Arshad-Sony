@@ -1,0 +1,31 @@
+---
+// Standalone shell for design variations (minimal, 3D). Not indexed.
+import fs from 'node:fs';
+import path from 'node:path';
+import VariantBar from '../components/VariantBar.astro';
+import '../styles/mascot.css';
+import '../styles/themes.css';
+import { store } from '../lib/site';
+interface Props { title: string; variant: string; bodyClass?: string }
+const { title, variant, bodyClass = '' } = Astro.props;
+const sstFaces = ([['Light', 300], ['Roman', 400], ['Medium', 500], ['Bold', 700]] as [string, number][])
+  .filter(([n]) => fs.existsSync(path.join(process.cwd(), 'public/fonts/sst', `SST-${n}.woff2`)))
+  .map(([n, w]) => `@font-face{font-family:"SST";src:url(/fonts/sst/SST-${n}.woff2) format("woff2");font-weight:${w};font-display:swap}`).join('');
+---
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>{title} · {store.name} design variation</title>
+  <link rel="icon" href="/brand/logo-mark.svg" type="image/svg+xml" />
+  <style is:inline set:html={`@font-face{font-family:"Source Sans 3";src:url(/fonts/source-sans-3.woff2) format("woff2");font-weight:300 700;font-display:swap}${sstFaces}`}></style>
+  <script is:inline>try { sessionStorage.removeItem('rdl-theme'); } catch (e) {}</script>
+</head>
+<body class={bodyClass}>
+  <slot />
+  <VariantBar current={variant} />
+  <style is:global>.vbar { display: flex; }</style>
+</body>
+</html>

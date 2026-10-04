@@ -2,6 +2,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import '../styles/global.css';
+import '../styles/mascot.css';
+import '../styles/themes.css';
+import VariantBar from '../components/VariantBar.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
@@ -15,8 +18,10 @@ interface Props {
   products?: Product[];
   loader?: boolean;
   noindex?: boolean;
+  theme?: string;
+  variant?: string;
 }
-const { title, description, image = '/images/banners/bravia-banner.webp', jsonLd = [], products = [], loader = false, noindex = false } = Astro.props;
+const { title, description, image = '/images/banners/bravia-banner.webp', jsonLd = [], products = [], loader = false, noindex = false, theme, variant } = Astro.props;
 // SST (Sony's typeface, as on shopatsc.com) is used when licensed files are placed in public/fonts/sst/
 const sstWeights: [string, number][] = [['Light', 300], ['Roman', 400], ['Medium', 500], ['Bold', 700]];
 const sstFaces = sstWeights
@@ -33,9 +38,19 @@ const quick = products.map(p => ({
 }));
 ---
 <!doctype html>
-<html lang="en-IN">
+<html lang="en-IN" data-theme={theme} class={variant ? 'is-preview' : undefined}>
 <head>
   <meta charset="utf-8" />
+  <script is:inline>
+    /* design-preview theme: set by /variations/, kept for the session so the whole site can be browsed in it */
+    (function () { try {
+      var d = document.documentElement, q = new URLSearchParams(location.search).get('theme');
+      if (q === 'off') sessionStorage.removeItem('rdl-theme');
+      if (d.dataset.theme) sessionStorage.setItem('rdl-theme', d.dataset.theme);
+      var t = d.dataset.theme || sessionStorage.getItem('rdl-theme');
+      if (t) { d.dataset.theme = t; d.classList.add('is-preview'); }
+    } catch (e) {} })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
@@ -118,6 +133,8 @@ const quick = products.map(p => ({
       </div>
     </>
   )}
+
+  <VariantBar current={variant} />
 
   <script>
     import '../scripts/mascot.js';

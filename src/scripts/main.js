@@ -148,18 +148,10 @@
     nav.classList.remove('is-open'); burger.setAttribute('aria-expanded', 'false'); document.body.style.overflow = '';
   }));
 
-  /* ---------------- Parallax, hero TV, flagships ---------------- */
+  /* ---------------- Parallax & hero TV ---------------- */
   const pxEls = $$('[data-speed]');
   const tvshow = $('#tvshow');
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-  const flag = $('#flagships'), track = $('#flagTrack'), flagBar = $('#flagBar'), flagNow = $('#flagNow');
-  const slides = flag ? $$('.slide', flag).length : 0;
-  function sizeFlag() {
-    if (!flag) return;
-    flag.style.height = desktop.matches && !reduced ? `${slides * 100}vh` : '';
-  }
-  sizeFlag();
-  window.addEventListener('resize', sizeFlag);
 
   function motion() {
     const vh = innerHeight;
@@ -175,14 +167,6 @@
       const p = clamp(window.scrollY / vh, 0, 1);
       tvshow.style.transform = `translate3d(${(mouse.x * 18).toFixed(1)}px, ${(p * -60 + mouse.y * 12).toFixed(1)}px, 0) scale(${(1 + p * 0.14).toFixed(3)}) rotateY(${(mouse.x * 4).toFixed(2)}deg)`;
     }
-    if (flag && desktop.matches) {
-      const r = flag.getBoundingClientRect();
-      const total = flag.offsetHeight - vh;
-      const p = clamp(-r.top / total, 0, 1);
-      track.style.transform = `translate3d(${(-p * (slides - 1) * 100).toFixed(3)}vw, 0, 0)`;
-      flagBar.style.transform = `scaleX(${p})`;
-      flagNow.textContent = '0' + (Math.min(slides - 1, Math.round(p * (slides - 1))) + 1);
-    }
   }
   if (!reduced) {
     window.addEventListener('mousemove', e => {
@@ -190,6 +174,56 @@
       mouse.ty = e.clientY / innerHeight - 0.5;
     }, { passive: true });
   }
+
+
+  /* ---------------- Auto carousels (no horizontal scrolling) ---------------- */
+  $$('[data-carousel]').forEach(car => {
+    const root = car.closest('section') || car.parentElement;
+    const slides = $$('.slide', car), dots = $$('[data-go]', root), now = $('[data-now]', root);
+    const interval = +car.dataset.interval || 6000;
+    let i = 0, timer = 0, inView = false, hover = false;
+    root.style.setProperty('--dur', interval + 'ms');
+    const show = n => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => {
+        const on = k === i;
+        s.classList.toggle('is-on', on);
+        s.toggleAttribute('aria-hidden', !on);
+        $$('a, button', s).forEach(el => (on ? el.removeAttribute('tabindex') : el.setAttribute('tabindex', '-1')));
+      });
+      dots.forEach((d, k) => {
+        d.classList.remove('is-on'); void d.offsetWidth; // restart the progress fill
+        d.classList.toggle('is-on', k === i);
+        d.classList.toggle('is-done', k < i);
+      });
+      if (now) now.textContent = String(i + 1).padStart(2, '0');
+      schedule();
+    };
+    const running = () => !reduced && inView && !hover && !document.hidden;
+    function schedule() {
+      clearTimeout(timer);
+      root.classList.toggle('is-paused', !running());
+      if (running()) timer = setTimeout(() => show(i + 1), interval);
+    }
+    $('[data-prev]', root)?.addEventListener('click', () => show(i - 1));
+    $('[data-next]', root)?.addEventListener('click', () => show(i + 1));
+    dots.forEach(d => d.addEventListener('click', () => show(+d.dataset.go)));
+    root.addEventListener('mouseenter', () => { hover = true; schedule(); });
+    root.addEventListener('mouseleave', () => { hover = false; show(i); });
+    root.addEventListener('focusin', () => { hover = true; schedule(); });
+    root.addEventListener('focusout', () => { hover = false; schedule(); });
+    root.addEventListener('keydown', e => { if (e.key === 'ArrowRight') show(i + 1); if (e.key === 'ArrowLeft') show(i - 1); });
+    document.addEventListener('visibilitychange', schedule);
+    new IntersectionObserver(([e]) => { inView = e.isIntersecting; schedule(); }, { threshold: 0.35 }).observe(car);
+    schedule();
+    // swipe (no scrolling: the slides crossfade in place)
+    let sx = 0, sy = 0;
+    car.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; });
+    car.addEventListener('pointerup', e => {
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(i + (dx < 0 ? 1 : -1));
+    });
+  });
 
   /* ---------------- Magnetic buttons ---------------- */
   if (finePointer && !reduced) {

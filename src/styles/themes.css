@@ -1,0 +1,96 @@
+/* ==========================================================================
+   Colour variations. Each theme overrides the design tokens in global.css.
+   Applied with <html data-theme="…">; see /variations/.
+   ========================================================================== */
+
+/* Rudy follows the theme */
+.rudy #rdBody stop { stop-color: var(--mascot-body, #5B0714); }
+.rudy rect[stroke="#e6b08c"] { stroke: var(--mascot-trim, #e6b08c); }
+.rudy .r-hand, .rudy .r-ant circle { fill: var(--mascot-trim, #e6b08c); }
+.rudy .r-limb, .rudy .r-leg { stroke: var(--mascot-limb, #3d0410); }
+.rudy .r-shoe { fill: var(--mascot-limb, #2a030b); }
+.rudy .r-mouth, .rudy .r-sw path { stroke: var(--mascot-trim, #e6b08c); }
+
+/* ---------- Champagne: warm white, black type, gold accents ---------- */
+[data-theme="champagne"] {
+  --white: #fffdf9;
+  --warm: #f8f3ea;
+  --tile: #f2ebdf;
+  --tile-2: #e8dfcf;
+  --ink: #121212;
+  --ink-2: #2e2b27;
+  --muted: #625b52;
+  --line: rgba(18, 18, 18, .1);
+  --line-2: rgba(18, 18, 18, .2);
+  --maroon: #151515;
+  --maroon-2: #333230;
+  --copper: #a3803b;
+  --rose: #d8c08a;
+  --rose-soft: #f3ead6;
+  --glow-rgb: 245, 235, 210;
+  --shadow-rgb: 18, 18, 18;
+  --mascot-body: #1d1d1d;
+  --mascot-trim: #d2b06a;
+  --mascot-limb: #0d0d0d;
+}
+
+/* ---------- Monogram: the original palette, blacker text, patterned background ---------- */
+[data-theme="monogram"] {
+  --ink: #000000;
+  --ink-2: #141010;
+  --muted: #3b3433;
+  --line: rgba(0, 0, 0, .14);
+  --line-2: rgba(0, 0, 0, .26);
+  --header-bg: rgba(255, 255, 255, .94);
+}
+[data-theme="monogram"] :is(body, .s-light, .s-paper, .hero, .phead, .pdp, .flag, .footer, .notfound, .offerline) {
+  background-image: url(/images/pattern.svg);
+  background-size: 120px 120px;
+}
+[data-theme="monogram"] .kicker, [data-theme="monogram"] .pcard__model { font-weight: 600; }
+
+/* ---------- Cobalt: crisp white and electric blue ---------- */
+[data-theme="cobalt"] {
+  --white: #ffffff;
+  --warm: #f3f5f9;
+  --tile: #eef1f6;
+  --tile-2: #e2e7ef;
+  --ink: #0c1322;
+  --ink-2: #2a3446;
+  --muted: #5a6577;
+  --line: rgba(12, 19, 34, .1);
+  --line-2: rgba(12, 19, 34, .2);
+  --maroon: #1f4fd6;
+  --maroon-2: #3263ee;
+  --copper: #4a6ea8;
+  --rose: #9db8f2;
+  --rose-soft: #e5ecfb;
+  --glow-rgb: 221, 231, 252;
+  --shadow-rgb: 12, 19, 34;
+  --mascot-body: #1f4fd6;
+  --mascot-trim: #bcd0fa;
+  --mascot-limb: #0c1f5c;
+}
+
+/* ---------- Sage: warm ivory and forest green ---------- */
+[data-theme="sage"] {
+  --white: #fbfaf6;
+  --warm: #f2f0e8;
+  --tile: #ebe9e0;
+  --tile-2: #e0ded3;
+  --ink: #1a201b;
+  --ink-2: #374036;
+  --muted: #646e5f;
+  --line: rgba(26, 32, 27, .1);
+  --line-2: rgba(26, 32, 27, .2);
+  --maroon: #2e4a39;
+  --maroon-2: #3d5f4a;
+  --copper: #8a7745;
+  --rose: #c9b98a;
+  --rose-soft: #e3e8dc;
+  --glow-rgb: 226, 233, 216;
+  --shadow-rgb: 26, 32, 27;
+  --mascot-body: #2e4a39;
+  --mascot-trim: #d8c896;
+  --mascot-limb: #1b2b21;
+}
