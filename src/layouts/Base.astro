@@ -1,4 +1,6 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -15,6 +17,12 @@ interface Props {
   noindex?: boolean;
 }
 const { title, description, image = '/images/banners/bravia-banner.webp', jsonLd = [], products = [], loader = false, noindex = false } = Astro.props;
+// SST (Sony's typeface, as on shopatsc.com) is used when licensed files are placed in public/fonts/sst/
+const sstWeights: [string, number][] = [['Light', 300], ['Roman', 400], ['Medium', 500], ['Bold', 700]];
+const sstFaces = sstWeights
+  .filter(([n]) => fs.existsSync(path.join(process.cwd(), 'public/fonts/sst', `SST-${n}.woff2`)))
+  .map(([n, w]) => `@font-face{font-family:"SST";src:url(/fonts/sst/SST-${n}.woff2) format("woff2");font-weight:${w};font-style:normal;font-display:swap}`)
+  .join('');
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image, Astro.site).href;
 const ld = [storeJsonLd(Astro.site), ...jsonLd];
@@ -46,8 +54,7 @@ const quick = products.map(p => ({
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="geo.region" content="IN-KA" />
   <meta name="geo.placename" content={`${store.area}, ${store.city}`} />
-  <link rel="preload" href="/fonts/cormorant-italic.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  {sstFaces ? <style is:inline set:html={sstFaces} /> : <link rel="preload" href="/fonts/source-sans-3.woff2" as="font" type="font/woff2" crossorigin />}
   {ld.map(obj => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
 </head>
 <body class={loader ? 'is-loading' : ''}>

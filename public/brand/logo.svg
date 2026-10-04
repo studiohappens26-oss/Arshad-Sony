@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 56" role="img" aria-label="RDL Sony Centre, HSR Layout">
-  <g fill="none" stroke="#b07a58" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 2)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 56" role="img" aria-label="RDL Sony Centre, HSR Layout">
+  <g fill="none" stroke="#5B0714" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 2)">
     <rect x="1" y="4" width="46" height="33" rx="6" stroke-width="2"/>
     <path d="M19 44h10M24 37v7" stroke-width="2"/>
     <path d="M14 29V12h7.5a5 5 0 0 1 0 10H14M20 22l6 7" stroke-width="2.4"/>
     <path d="M31.5 16.5a4 4 0 0 1 0 8" stroke-width="2"/>
     <path d="M35.5 13a9 9 0 0 1 0 15" stroke-width="2" opacity=".55"/>
   </g>
-  <text x="64" y="30" font-family="'Cormorant Garamond', Georgia, serif" font-weight="600" font-size="30" letter-spacing="4" fill="#1a1213">RDL</text>
-  <text x="65" y="47" font-family="Inter, Arial, sans-serif" font-weight="500" font-size="9" letter-spacing="2.6" fill="#8a6650">SONY CENTRE · HSR LAYOUT</text>
+  <text x="64" y="30" font-family="SST, 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="25" letter-spacing="4" fill="#17100f">RDL</text>
+  <text x="65" y="47" font-family="SST, 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif" font-weight="500" font-size="9.5" letter-spacing="2.6" fill="#9c6a47">SONY CENTRE · HSR LAYOUT</text>
 </svg>

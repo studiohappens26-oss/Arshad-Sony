@@ -98,9 +98,12 @@ Do these after launch; they matter most for local search:
 
 ## Design notes
 
-- **Palette:** near-black with a maroon undertone, warm ivory, and rose gold used only as a fine accent.
-- **Type:** Inter (display cut) for headings and text, Cormorant Garamond for serif accents.
-- **Product images are cut out** (transparent WebP) so they can sit on dark backgrounds. When adding products in the CMS, upload a **PNG or WebP with a transparent background**. Otherwise the product shows inside a white box.
+- **Light theme:** white and warm off-white surfaces, near-black text, maroon for buttons and labels, copper accents. Rose gold is decorative only (soft glows).
+- **Typeface: SST**, Sony's own font, as used on shopatsc.com.
+  - SST is proprietary to Sony, so its files aren't included in the repo.
+  - Put the licensed files (`SST-Light.woff2`, `SST-Roman.woff2`, `SST-Medium.woff2`, `SST-Bold.woff2`) in `public/fonts/sst/` and the build switches to SST automatically. Ask your Sony India contact for the files and usage terms.
+  - Until then the site uses **Source Sans 3**, a close free alternative.
+- **Product images are cut out** (transparent WebP) so they sit cleanly on the tiles. When adding products in the CMS, upload a **PNG or WebP with a transparent background**. Otherwise the product shows inside a white box.
   - To cut out a white-background photo yourself, use any background remover, or ImageMagick:
     `convert in.jpg -fuzz 8% -transparent white out.webp`
 - **Effects:** custom cursors per category, Rudy the mascot, a parallax TV glow in the hero, a pinned horizontal "flagships" scroll, line-by-line headline reveals and image parallax.

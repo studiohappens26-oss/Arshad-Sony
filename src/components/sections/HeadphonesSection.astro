@@ -4,7 +4,7 @@ import type { Product } from '../../lib/site';
 interface Props { products: Product[]; heading?: boolean }
 const { products, heading = true } = Astro.props;
 ---
-<section class="section s-deep" id="headphones" data-section="hp" data-cursor="hp">
+<section class="section s-paper" id="headphones" data-section="hp" data-cursor="hp">
   <div class="container">
     {heading && (
       <div class="showcase">

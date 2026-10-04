@@ -224,7 +224,6 @@
       const themed = !interactive || cardLink;
       ['tv', 'hp', 'sb'].forEach(m => cursor.classList.toggle('m-' + m, mode === m && themed));
       cursor.classList.toggle('is-link', !!interactive && !cardLink);
-      cursor.classList.toggle('on-light', !!t.closest('.s-light, .s-paper, .modal__img'));
       let text = '';
       if (themed && zone) {
         const lab = t.closest('[data-cursor-label]');
