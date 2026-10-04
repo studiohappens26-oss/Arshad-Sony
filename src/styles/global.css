@@ -289,7 +289,7 @@ address { font-style: normal; }
 .pcard__tile { position: relative; display: grid; place-items: center; aspect-ratio: 1 / .86; background: var(--tile); overflow: hidden; margin-bottom: 22px; }
 .s-paper .pcard__tile { background: var(--white); }
 .pcard__tile::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 60% at 50% 45%, var(--tile-hi), transparent 70%); pointer-events: none; }
-.pcard__tile img { position: relative; z-index: 1; width: 74%; height: 74%; object-fit: contain; filter: drop-shadow(0 22px 20px rgba(var(--shadow-rgb), .18)); transition: transform 1.1s var(--ease-out); }
+.pcard__tile img { position: absolute; z-index: 1; inset: 11% 13%; width: 74%; height: 78%; object-fit: contain; filter: drop-shadow(0 22px 20px rgba(var(--shadow-rgb), .18)); transition: transform 1.1s var(--ease-out); }
 .pcard:hover .pcard__tile img { transform: scale(1.05) translateY(-4px); }
 .pcard__flag { position: absolute; z-index: 2; top: 16px; left: 16px; font-size: .66rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--maroon); }
 .pcard__save { position: absolute; z-index: 2; top: 16px; right: 16px; font-size: .7rem; font-weight: 600; color: var(--maroon); }
