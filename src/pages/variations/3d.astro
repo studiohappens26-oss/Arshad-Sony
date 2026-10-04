@@ -77,6 +77,7 @@ const tvCount = all.filter(p => p.category === 'tv').length;
     import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     import '../../scripts/mascot.js';
+    import { materials, buildHeadphones, buildSoundbar, buildSubwoofer, buildRearSpeaker } from '../../scripts/av-models';
 
     document.querySelectorAll<HTMLElement>('[data-mascot]').forEach(el => { el.innerHTML = (window as any).Rudy.svg(el.dataset.mascot); });
 
@@ -111,6 +112,9 @@ const tvCount = all.filter(p => p.category === 'tv').length;
     key.shadow.radius = 6;
     scene.add(key);
     scene.add(new THREE.HemisphereLight(0xfff6ef, 0xe8ddd5, 0.6));
+    const rim = new THREE.DirectionalLight(0xfff1e6, 1.6); // separates black products from the light backdrop
+    rim.position.set(-4, 3.5, -3.5);
+    scene.add(rim);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.12 }));
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
@@ -118,9 +122,7 @@ const tvCount = all.filter(p => p.category === 'tv').length;
 
     /* ---------- materials ---------- */
     const black = new THREE.MeshPhysicalMaterial({ color: 0x141416, roughness: 0.35, metalness: 0.5, clearcoat: 0.6, clearcoatRoughness: 0.25 });
-    const fabric = new THREE.MeshStandardMaterial({ color: 0x1c1c1f, roughness: 0.95, metalness: 0 });
     const satin = new THREE.MeshStandardMaterial({ color: 0x26262a, roughness: 0.6, metalness: 0.2 });
-    const copper = new THREE.MeshStandardMaterial({ color: 0xc08a65, roughness: 0.3, metalness: 0.9 });
 
     /* ---------- TV with a live BRAVIA-style screen ---------- */
     const screenMat = new THREE.ShaderMaterial({
@@ -168,24 +170,21 @@ const tvCount = all.filter(p => p.category === 'tv').length;
     tv.position.y = H / 2 + 0.26;
     scene.add(tv);
 
-    /* ---------- soundbar, subwoofer, sound rings ---------- */
-    const bar = new THREE.Group();
-    const barBody = new THREE.Mesh(new RoundedBoxGeometry(2.3, 0.11, 0.15, 4, 0.045), fabric);
-    barBody.castShadow = true;
-    const grille = new THREE.Mesh(new THREE.BoxGeometry(2.18, 0.004, 0.11), satin);
-    grille.position.y = 0.056;
-    const led = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.012, 0.004), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    led.position.set(0.9, 0, 0.077);
-    bar.add(barBody, grille, led);
-    bar.position.set(0, 0.056, 0.62);
+    /* ---------- home theatre: soundbar, subwoofer, rear speakers ---------- */
+    const M = materials();
+    const bar = buildSoundbar(M, 2.1);
+    bar.position.set(0, 0.058, 0.62);
     scene.add(bar);
-
-    const sub = new THREE.Mesh(new RoundedBoxGeometry(0.46, 0.66, 0.5, 4, 0.05), fabric);
-    sub.position.set(2.25, 0.33, 0.1);
-    sub.castShadow = true;
-    const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.02, 48), satin);
-    cone.rotation.x = Math.PI / 2; cone.position.set(2.25, 0.3, 0.355);
-    scene.add(sub, cone);
+    const { group: sub, cone } = buildSubwoofer(M);
+    sub.position.set(2.25, 0.31, 0.1);
+    sub.rotation.y = -0.18;
+    scene.add(sub);
+    [[-2.25, 0.3], [2.95, 0.6]].forEach(([x, z]) => {
+      const sp = buildRearSpeaker(M);
+      sp.position.set(x, 0.13, z);
+      sp.rotation.y = x < 0 ? 0.25 : -0.3;
+      scene.add(sp);
+    });
 
     const ringMat = new THREE.MeshBasicMaterial({ color: 0xc08a65, transparent: true, opacity: 0 });
     const rings = Array.from({ length: 4 }, (_, i) => {
@@ -195,29 +194,9 @@ const tvCount = all.filter(p => p.category === 'tv').length;
     });
 
     /* ---------- headphones ---------- */
-    const hp = new THREE.Group();
-    const band = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.04, 20, 80, Math.PI), satin);
-    band.castShadow = true;
-    const cushionTop = new THREE.Mesh(new THREE.TorusGeometry(0.47, 0.03, 16, 60, Math.PI * 0.5), fabric);
-    cushionTop.rotation.z = Math.PI * 0.25;
-    hp.add(band, cushionTop);
-    [-1, 1].forEach(s => {
-      const cup = new THREE.Group();
-      const shell = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.12, 8, 32), black);
-      shell.scale.set(1, 1, 0.55);
-      shell.castShadow = true;
-      const pad = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.06, 16, 48), fabric);
-      pad.scale.set(1, 1.25, 1);
-      pad.position.z = s * -0.0; pad.rotation.y = Math.PI / 2;
-      const accent = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.008, 8, 64), copper);
-      accent.rotation.y = Math.PI / 2; accent.position.x = s * 0.06; accent.scale.set(1, 1.3, 1);
-      shell.rotation.y = Math.PI / 2;
-      cup.add(shell, pad, accent);
-      cup.position.set(s * 0.5, -0.12, 0);
-      hp.add(cup);
-    });
+    const hp = buildHeadphones(M);
     hp.position.set(-3.4, 1.2, 1.4);
-    hp.scale.setScalar(0.55);
+    hp.scale.setScalar(0.42);
     hp.rotation.set(0.1, 0.6, 0);
     scene.add(hp);
 
@@ -226,8 +205,8 @@ const tvCount = all.filter(p => p.category === 'tv').length;
     const shots: Shot[] = [
       { pos: [-1.7, 1.45, 7.6], look: [-1.6, 1.0, 0], mix: 0 },
       { pos: [3.4, 1.55, 5.4], look: [1.8, 1.05, 0], mix: 0.2 },
-      { pos: [2.3, 0.5, 4.4], look: [1.25, 0.42, 0.6], mix: 0.5 },
-      { pos: [-3.0, 1.4, 3.7], look: [-3.95, 1.2, 1.4], mix: 0.9 },
+      { pos: [1.55, 0.42, 3.3], look: [1.0, 0.24, 0.6], mix: 0.5 },
+      { pos: [-3.05, 1.35, 3.9], look: [-4.15, 1.15, 1.4], mix: 0.9 },
       { pos: [0, 1.9, 10.5], look: [0, 0.35, 0], mix: 0.3 }
     ];
     const ease = (t: number) => t * t * (3 - 2 * t);
@@ -283,15 +262,14 @@ const tvCount = all.filter(p => p.category === 'tv').length;
       screenMat.uniforms.uMix.value = mixNow;
       // headphones join the scene from the audio section onward
       const hv = Math.min(1, Math.max(0, (seg - 2.2) / 0.7));
-      hp.scale.setScalar(0.55 * ease(hv));
+      hp.scale.setScalar(0.42 * ease(hv));
       hp.visible = hv > 0.001;
       if (!reduced) {
         screenMat.uniforms.uTime.value = t;
         hp.position.y = 1.2 + Math.sin(t * 1.1) * 0.05;
         hp.rotation.y = 0.5 + Math.sin(t * 0.5) * 0.45;
-        const pulse = 1 + Math.max(0, Math.sin(t * 7)) * 0.012;
-        bar.scale.set(1, pulse, 1); sub.scale.set(pulse, pulse, pulse);
         const audio = Math.max(0, 1 - Math.abs(seg - 2) * 1.4);
+        cone.position.z = (Math.max(0, Math.sin(t * 7)) * 0.006 + Math.max(0, Math.sin(t * 13.3)) * 0.003) * (0.4 + audio);
         rings.forEach(r => {
           const ph = (t * 0.35 + r.userData.phase) % 1;
           r.scale.setScalar(0.3 + ph * 2.6);
