@@ -1,29 +1,29 @@
 ---
-interface Props { counts: Record<string, number> }
-const { counts } = Astro.props;
+import { inr } from '../../lib/site';
+interface Props { stats: Record<'tv' | 'headphones' | 'soundbars', { count: number; from: number }> }
+const { stats } = Astro.props;
+const cats = [
+  { key: 'tv', href: '/televisions/', title: 'Televisions', img: '/images/products/k-65xr80.webp', cursor: 'tv', mascot: 'tv', label: 'BRAVIA 2, 3, 7, 8, 9 and XR' },
+  { key: 'headphones', href: '/headphones/', title: 'Headphones', img: '/images/products/wh-1000xm5.webp', cursor: 'hp', mascot: 'hp', label: 'Wireless, noise cancelling and studio' },
+  { key: 'soundbars', href: '/soundbars/', title: 'Soundbars', img: '/images/products/ht-a3000-51.webp', cursor: 'sb', mascot: 'sb', label: '2.1 to 5.1 channel home theatre' }
+] as const;
 ---
-<section class="section categories" id="categories" data-section="categories">
+<section class="section s-dark" data-section="categories">
   <div class="container">
-    <div class="head reveal">
-      <p class="eyebrow">Shop by category</p>
-      <h2 class="split">Pick your <em>Sony</em> experience</h2>
+    <div class="sec-head">
+      <h2 class="h2 lines"><span class="ln"><span style="--i:0">Three ways</span></span><span class="ln"><span style="--i:1">to hear and see Sony.</span></span></h2>
+      <p class="lede reveal">Visit our HSR Layout showroom to compare picture and sound before you decide.</p>
     </div>
-    <div class="cat-grid">
-      <a href="/televisions/" class="cat tilt" data-cursor="tv" data-cursor-label="Watch">
-        <div class="cat__bg"></div><div class="cat__mascot" data-mascot="tv"></div>
-        <img src="/images/products/k-65xr80.webp" alt="" loading="lazy" width="1000" height="1000" />
-        <div class="cat__txt"><span class="cat__n">{counts.tv} models</span><h3>Televisions</h3><p>BRAVIA 2, 3, 7, 8, 9 &amp; XR</p></div>
-      </a>
-      <a href="/headphones/" class="cat tilt" data-cursor="hp" data-cursor-label="Listen">
-        <div class="cat__bg"></div><div class="cat__mascot" data-mascot="hp"></div>
-        <img src="/images/products/wh-ult900n.webp" alt="" loading="lazy" width="1000" height="1000" />
-        <div class="cat__txt"><span class="cat__n">{counts.headphones} models</span><h3>Headphones</h3><p>Studio, ULT WEAR &amp; 1000X</p></div>
-      </a>
-      <a href="/soundbars/" class="cat tilt" data-cursor="sb" data-cursor-label="Feel it">
-        <div class="cat__bg"></div><div class="cat__mascot" data-mascot="sb"></div>
-        <img src="/images/products/ht-a3000-51.webp" alt="" loading="lazy" width="1000" height="1000" />
-        <div class="cat__txt"><span class="cat__n">{counts.soundbars} models</span><h3>Soundbars</h3><p>2.1ch to 5.1ch home theatre</p></div>
-      </a>
+    <div class="cats">
+      {cats.map((c, i) => (
+        <a href={c.href} class="cat reveal" style={`--d:${i * 120}ms`} data-cursor={c.cursor} data-cursor-label="Explore">
+          <div class="cat__top"><span class="num">0{i + 1}</span><div class="cat__mascot" data-mascot={c.mascot}></div></div>
+          <div class="cat__img"><img src={c.img} alt="" loading="lazy" /></div>
+          <h3>{c.title}</h3>
+          <p class="cat__meta">{stats[c.key].count} models · from {inr(stats[c.key].from)}<br />{c.label}</p>
+          <span class="link">Explore {c.title.toLowerCase()} <span class="arr">→</span></span>
+        </a>
+      ))}
     </div>
   </div>
 </section>

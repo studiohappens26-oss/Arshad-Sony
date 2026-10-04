@@ -1,16 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
 import About from '../components/sections/About.astro';
-import Why from '../components/sections/Why.astro';
-import Gallery from '../components/sections/Gallery.astro';
-import Visit from '../components/sections/Visit.astro';
+import Showroom from '../components/sections/Showroom.astro';
 import { store } from '../lib/site';
 ---
 <Base title={`About ${store.name} | Sony Authorised Dealer, ${store.area}, Bengaluru`}
   description={`${store.name}, ${store.area} is a trusted Sony electronics retailer in Bangalore offering genuine Sony TVs from 32" to 98" and premium audio at competitive prices.`}>
-  <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">About</span></nav>
-  <About level="h1" />
-  <Why />
-  <Gallery />
-  <Visit />
+  <PageHead crumbs={[['Home', '/'], ['About']]} title="About RDL Sony" lede="At RDL Sony, we deliver authentic Sony electronics with unbeatable prices and exceptional customer support in Bangalore." mascot="about" section="about" />
+  <About />
+  <Showroom />
 </Base>

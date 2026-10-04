@@ -50,7 +50,7 @@ collections:
           - { label: Soundbar / Home theatre, value: soundbars }
       - { label: Price (₹), name: price, widget: number, value_type: int, min: 0 }
       - { label: MRP (₹, optional), name: mrp, widget: number, value_type: int, min: 0, required: false, hint: "Only if higher than the price; shows a 'Save x%' badge" }
-      - { label: Product image, name: image, widget: image, hint: "Square image on a white background works best (1000 × 1000)" }
+      - { label: Product image, name: image, widget: image, hint: "PNG or WebP with a transparent background, about 1000 px wide. Products sit on dark backgrounds, so a white background will show as a box." }
       - label: Labels
         name: tags
         widget: select
@@ -104,10 +104,8 @@ collections:
         file: src/content/settings/home.json
         fields:
           - { label: Hero small heading, name: heroEyebrow, widget: string }
-          - { label: Hero headline, name: heroTitle, widget: string }
-          - { label: Hero headline (gold italic part), name: heroTitleAccent, widget: string }
+          - { label: Hero headline (line 1), name: heroTitle, widget: string }
+          - { label: Hero headline (line 2, serif), name: heroTitleAccent, widget: string }
           - { label: Hero paragraph, name: heroLead, widget: text }
-          - { label: Offer band small heading, name: offerEyebrow, widget: string }
-          - { label: Offer headline, name: offerTitle, widget: string }
-          - { label: Offer headline (gold italic part), name: offerTitleAccent, widget: string }
-          - { label: Offer paragraph, name: offerText, widget: text }
+          - { label: Offer title (leave empty to hide the offer line), name: offerTitle, widget: string, required: false }
+          - { label: Offer text, name: offerText, widget: text, required: false }

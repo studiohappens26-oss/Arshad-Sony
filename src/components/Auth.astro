@@ -1,0 +1,10 @@
+---
+// "SONY | Authorised Dealer" lockup
+interface Props { size?: 'sm' | 'lg'; class?: string }
+const { size = 'sm', class: cls = '' } = Astro.props;
+---
+<span class={`auth ${size === 'lg' ? 'auth--lg' : ''} ${cls}`} role="img" aria-label="Sony Authorised Dealer">
+  <span class="auth__sony" aria-hidden="true">SONY</span>
+  <span class="auth__rule" aria-hidden="true"></span>
+  <span class="auth__txt" aria-hidden="true">Authorised<br />Dealer</span>
+</span>

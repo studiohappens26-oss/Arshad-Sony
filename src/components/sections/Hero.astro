@@ -1,42 +1,37 @@
 ---
-import Seal from '../Seal.astro';
 import home from '../../content/settings/home.json';
-import { telLink } from '../../lib/site';
+import { store, telLink, directionsLink, mapsLink } from '../../lib/site';
 interface Props { modelCount: number }
 const { modelCount } = Astro.props;
 ---
-<section class="hero" id="top" data-section="hero">
-  <div class="hero__glow" data-speed="-0.15"></div>
-  <div class="hero__bigword" data-speed="0.35" aria-hidden="true">BRAVIA</div>
+<section class="hero" data-section="hero">
+  <div class="hero__glow" data-speed="0.12"></div>
   <div class="container hero__grid">
     <div class="hero__copy">
-      <p class="eyebrow reveal">{home.heroEyebrow}</p>
-      <h1 class="hero__title split">{home.heroTitle} <em>{home.heroTitleAccent}</em></h1>
-      <p class="hero__lead reveal">{home.heroLead}</p>
-      <div class="hero__cta reveal">
-        <a href="/televisions/" class="btn btn--solid magnetic">Explore BRAVIA TVs <span aria-hidden="true">→</span></a>
-        <a href="/contact/" class="btn btn--ghost magnetic">Visit the shop</a>
-        <a href={telLink} class="btn btn--ghost magnetic">Call now</a>
+      <span class="kicker reveal">{home.heroEyebrow}</span>
+      <h1 class="display lines">
+        <span class="ln"><span style="--i:0">{home.heroTitle}</span></span>
+        <span class="ln"><span style="--i:1" class="serif">{home.heroTitleAccent}</span></span>
+      </h1>
+      <p class="lede reveal" style="--d:300ms">{home.heroLead}</p>
+      <div class="btn-row reveal" style="--d:420ms">
+        <a href={directionsLink} target="_blank" rel="noopener" class="btn btn--primary magnetic">Visit the showroom</a>
+        <a href={telLink} class="btn btn--outline magnetic">Call {store.phoneDisplay}</a>
       </div>
-      <ul class="hero__facts reveal">
-        <li><b class="count" data-to={modelCount}>{modelCount}</b><span>Sony models in store</span></li>
-        <li><b>32"–98"</b><span>BRAVIA range</span></li>
-        <li><b>100%</b><span>Genuine products</span></li>
-      </ul>
     </div>
-    <div class="hero__stage" id="heroStage">
-      <Seal id="hero" class="seal--hero" data-depth="0.6" />
-      <div class="layer layer--tv" data-depth="0.15"><img src="/images/products/k-55xr70.webp" alt="Sony BRAVIA 7 55-inch Mini LED TV" width="1000" height="1000" fetchpriority="high" /></div>
-      <div class="layer layer--hp" data-depth="0.5"><img src="/images/products/wh-1000xm5.webp" alt="Sony WH-1000XM5 headphones" width="1000" height="1000" /></div>
-      <div class="layer layer--sb" data-depth="0.35"><img src="/images/products/ht-s400.webp" alt="Sony HT-S400 soundbar" width="1000" height="1000" /></div>
-      <div class="hero__chip chip-a" data-depth="0.7"><span class="dot"></span> BRAVIA 7 · Mini LED</div>
-      <div class="hero__chip chip-b" data-depth="0.9">Noise cancelling · WH-1000XM5</div>
+    <div class="hero__stage" id="heroStage" data-cursor="tv" data-cursor-label="BRAVIA 9">
+      <div class="tvshow" id="tvshow">
+        <img class="ambi" src="/images/products/k-85xr90.webp" alt="" aria-hidden="true" />
+        <img src="/images/products/k-85xr90.webp" alt="Sony BRAVIA 9 85-inch Mini LED TV" width="802" height="461" fetchpriority="high" />
+      </div>
     </div>
   </div>
-  <a href="#categories" class="scrollcue" aria-label="Scroll down"><span></span></a>
+  <div class="container">
+    <dl class="hero__facts reveal" style="--d:600ms">
+      <div><dt>Showroom</dt><dd><a href={mapsLink} target="_blank" rel="noopener">6th Main Rd, 7th Sector</a></dd></div>
+      <div><dt>Hours</dt><dd>{store.hoursText}</dd></div>
+      <div><dt>In store</dt><dd>{modelCount} Sony models</dd></div>
+      <div><dt>Status</dt><dd>Sony authorised dealer</dd></div>
+    </dl>
+  </div>
 </section>
-<div class="marquee" aria-hidden="true">
-  <div class="marquee__track">
-    {[0, 1].map(() => ['Sony Authorised Dealer', 'Genuine Sony Products', 'BRAVIA 32" to 98"', 'Best Prices in Bangalore', 'Expert Guidance', 'HSR Layout, Bengaluru'].map(t => <span>✓ {t}</span>))}
-  </div>
-</div>

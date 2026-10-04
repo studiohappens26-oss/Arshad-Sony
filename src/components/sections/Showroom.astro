@@ -1,0 +1,33 @@
+---
+import Auth from '../Auth.astro';
+import Icon from '../Icon.astro';
+import { store, telLink, directionsLink, waLink } from '../../lib/site';
+interface Props { level?: 'h1' | 'h2' }
+const { level = 'h2' } = Astro.props;
+const H = level;
+---
+<section class="section s-dark" id="visit" data-section="contact">
+  <div class="container showroom__grid">
+    <div>
+      <span class="kicker reveal">Visit the showroom</span>
+      <H class="h2 lines" style="margin-bottom:34px"><span class="ln"><span style="--i:0">See it in person.</span></span></H>
+      <address class="showroom__addr reveal">{store.streetAddress}, {store.locality} {store.postalCode}</address>
+      <dl class="dl reveal">
+        <div><dt>Phone</dt><dd><a href={telLink}>{store.phoneDisplay}</a></dd></div>
+        <div><dt>Email</dt><dd><a href={`mailto:${store.email}`}>{store.email}</a></dd></div>
+        <div><dt>Hours</dt><dd>{store.hoursText}</dd></div>
+        <div><dt>Delivery</dt><dd>Free delivery to your doorstep · 30-day returns</dd></div>
+      </dl>
+      <div class="btn-row reveal">
+        <a class="btn btn--primary magnetic" href={directionsLink} target="_blank" rel="noopener"><Icon name="pin" /> Get directions</a>
+        <a class="btn btn--outline magnetic" href={telLink}><Icon name="phone" /> Call now</a>
+        <a class="btn btn--outline magnetic" href={waLink(`Hi ${store.name}, I'd like to enquire about a Sony product.`)} target="_blank" rel="noopener"><Icon name="wa" /> WhatsApp</a>
+      </div>
+      <div class="showroom__auth reveal"><Auth size="lg" /><span>Genuine Sony products, from an authorised Sony dealer in HSR Layout.</span></div>
+    </div>
+    <div class="showroom__map reveal">
+      <div class="showroom__mascot" data-mascot="contact"></div>
+      <iframe title={`Map to ${store.name}, ${store.area}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade" src={`https://www.google.com/maps?q=${encodeURIComponent(store.mapsQuery)}&output=embed`}></iframe>
+    </div>
+  </div>
+</section>

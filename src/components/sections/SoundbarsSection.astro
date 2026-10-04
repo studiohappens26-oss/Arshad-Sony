@@ -1,26 +1,24 @@
 ---
 import ProductCard from '../ProductCard.astro';
 import type { Product } from '../../lib/site';
-interface Props { products: Product[]; level?: 'h1' | 'h2' }
-const { products, level = 'h2' } = Astro.props;
-const H = level;
+interface Props { products: Product[]; heading?: boolean }
+const { products, heading = true } = Astro.props;
 ---
-<section class="section sbs" id="soundbars" data-section="sb" data-cursor="sb">
+<section class="section s-light" id="soundbars" data-section="sb" data-cursor="sb">
   <div class="container">
-    <div class="sbs__split">
-      <div class="head head--mascot reveal">
-        <div class="head__mascot" data-mascot="sb"></div>
+    {heading && (
+      <div class="showcase showcase--flip">
         <div>
-          <p class="eyebrow">{level === 'h1' ? 'Sony soundbars & home theatre in Bangalore' : 'Soundbars & home theatre'}</p>
-          <H class="split">Feel the bass <em>in your bones</em></H>
-          <p class="head__sub">360 Spatial Sound Mapping, wireless subwoofers and full 5.1 setups that turn your living room into a cinema. Hear the difference in our demo room.</p>
+          <div class="showcase__mascot" data-mascot="sb"></div>
+          <h2 class="h2 lines"><span class="ln"><span style="--i:0">Soundbars &amp;</span></span><span class="ln"><span style="--i:1">home theatre</span></span></h2>
+          <p class="lede reveal">From a compact 2.1 soundbar with a wireless subwoofer to the HT-A3000 with 360 Spatial Sound Mapping. Pair one with a BRAVIA for cinema sound at home.</p>
+          <a class="link reveal" href="/soundbars/">All soundbars <span class="arr">→</span></a>
+        </div>
+        <div class="showcase__media showcase__media--wide reveal">
+          <img src="/images/banners/living-room-tv.webp" alt="A Sony BRAVIA TV and soundbar in a living room" loading="lazy" class="parallax-img" data-speed="0.12" />
         </div>
       </div>
-      <div class="sbs__banner reveal">
-        <img src="/images/banners/soundbar-banner.webp" alt="Sony soundbar: experience cinematic sound with powerful bass" class="parallax-img" data-speed="0.12" loading="lazy" />
-        <div class="eqbig" aria-hidden="true">{Array.from({ length: 12 }, () => <i></i>)}</div>
-      </div>
-    </div>
+    )}
     <div class="grid grid--4">{products.map(p => <ProductCard p={p} />)}</div>
   </div>
 </section>

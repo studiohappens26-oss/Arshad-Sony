@@ -1,34 +1,27 @@
 ---
-import { store, waLink } from '../lib/site';
+import Logo from './Logo.astro';
+import Auth from './Auth.astro';
+import { store, telLink, directionsLink } from '../lib/site';
 const path = Astro.url.pathname;
-const links = [
-  ['/televisions/', 'Televisions'], ['/headphones/', 'Headphones'], ['/soundbars/', 'Soundbars'], ['/about/', 'About'], ['/contact/', 'Contact']
-];
+const links = [['/televisions/', 'Televisions'], ['/headphones/', 'Headphones'], ['/soundbars/', 'Soundbars'], ['/about/', 'About'], ['/contact/', 'Visit us']];
 ---
-<div class="topbar">
-  <div class="topbar__in">
-    <span class="topbar__pill"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Sony Authorised Dealer</span>
-    <span class="topbar__msg">Genuine Sony TVs &amp; audio · Best prices in Bangalore · Open {store.hoursText}</span>
-    <a class="topbar__call" href={`tel:${store.phone}`}>Call {store.phoneDisplay}</a>
-  </div>
-</div>
 <header class="header" id="header">
   <div class="header__in">
-    <a href="/" class="brand" aria-label={`${store.name} home`}>
-      <img src="/brand/logo-mark.svg" alt="" width="46" height="46" class="brand__mark" />
+    <a href="/" class="brand" aria-label={`${store.name}, home`}>
+      <Logo class="brand__mark" />
       <span class="brand__text"><strong>RDL</strong><span>Sony Centre · HSR Layout</span></span>
     </a>
     <nav class="nav" id="nav" aria-label="Primary">
       {links.map(([href, label]) => <a href={href} class={path.startsWith(href) ? 'is-active' : undefined} aria-current={path.startsWith(href) ? 'page' : undefined}>{label}</a>)}
-      <a href={`tel:${store.phone}`} class="nav__call">Call now · {store.phoneDisplay}</a>
+      <div class="nav__extra">
+        <Auth />
+        <a href={telLink}>Call {store.phoneDisplay}</a>
+        <a href={directionsLink} target="_blank" rel="noopener">Get directions</a>
+      </div>
     </nav>
     <div class="header__end">
-      <a href="/about/" class="auth-pill" title="Sony Authorised Dealer">
-        <img src="/brand/sony-authorised-badge.svg" alt="" width="34" height="34" />
-        <span><b>SONY</b><small>Authorised Dealer</small></span>
-      </a>
-      <a href={`tel:${store.phone}`} class="btn btn--sm btn--ghost magnetic header__call">Call now</a>
-      <a href={waLink(`Hi ${store.name}, I'd like to enquire about a Sony product.`)} class="btn btn--sm btn--solid magnetic header__enq" target="_blank" rel="noopener">Enquire</a>
+      <a href="/about/" aria-label="Sony Authorised Dealer"><Auth /></a>
+      <a href={telLink} class="btn btn--outline btn--sm header__call">Call now</a>
       <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><i></i><i></i></button>
     </div>
   </div>

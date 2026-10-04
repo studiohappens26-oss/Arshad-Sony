@@ -1,0 +1,21 @@
+---
+interface Props { crumbs: [string, string?][]; title: string; lede?: string; mascot?: string; section?: string; cursor?: string }
+const { crumbs, title, lede, mascot, section = 'hero', cursor } = Astro.props;
+---
+<section class="phead" data-section={section} data-cursor={cursor}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      {crumbs.map(([label, href], i) => (
+        <>{i > 0 && <span aria-hidden="true">/</span>}{href ? <a href={href}>{label}</a> : <span aria-current="page">{label}</span>}</>
+      ))}
+    </nav>
+    <div class="phead__grid">
+      <h1 class="lines"><span class="ln"><span style="--i:0">{title}</span></span></h1>
+      <div class="phead__side">
+        {mascot && <div class="phead__mascot" data-mascot={mascot}></div>}
+        {lede && <p class="lede reveal">{lede}</p>}
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

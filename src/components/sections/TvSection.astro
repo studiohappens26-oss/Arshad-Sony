@@ -1,43 +1,43 @@
 ---
 import ProductCard from '../ProductCard.astro';
 import type { Product } from '../../lib/site';
-interface Props { products: Product[]; level?: 'h1' | 'h2' }
-const { products, level = 'h2' } = Astro.props;
-const H = level;
-const [pre, accent, post] = level === 'h1' ? ['Sony BRAVIA TVs in ', 'Bangalore', ''] : ['Big screens, ', 'bigger', ' stories'];
+interface Props { products: Product[]; heading?: boolean }
+const { products, heading = true } = Astro.props;
 const sizes = [...new Set(products.map(p => p.size).filter(Boolean))].sort((a, b) => (a as number) - (b as number));
 ---
-<section class="section tvs" id="televisions" data-section="tv" data-cursor="tv">
+<section class="section s-light" id="televisions" data-section="tv" data-cursor="tv">
   <div class="container">
-    <div class="head head--mascot reveal">
-      <div class="head__mascot" data-mascot="tv"></div>
-      <div>
-        <p class="eyebrow">Televisions · Sony BRAVIA</p>
-        <H class="split">{pre}<em>{accent}</em>{post}</H>
-        <p class="head__sub">Every Sony TV we stock, from a 32" HD Ready bedroom set to an 85" BRAVIA 9 Mini LED cinema. See them all side by side at our HSR Layout showroom.</p>
+    {heading && (
+      <div class="sec-head">
+        <div class="sec-head__title">
+          <div class="sec-mascot" data-mascot="tv"></div>
+          <h2 class="h2 lines"><span class="ln"><span style="--i:0">Televisions</span></span></h2>
+        </div>
+        <p class="lede reveal">Every BRAVIA we stock, from a 32-inch HD Ready set for the bedroom to an 85-inch Mini LED for the living room.</p>
       </div>
-    </div>
-    <div class="toolbar reveal" role="toolbar" aria-label="Filter televisions">
+    )}
+    <div class="toolbar" role="toolbar" aria-label="Filter televisions">
       <div class="tabs" id="tvTabs">
-        <button class="is-on" data-tab="all" aria-pressed="true">All TVs</button>
-        <button data-tab="highlight" aria-pressed="false">Highlights of the week</button>
-        <button data-tab="trending" aria-pressed="false">Trending styles</button>
+        <button class="is-on" data-tab="all" aria-pressed="true">All</button>
+        <button data-tab="new" aria-pressed="false">New arrivals</button>
+        <button data-tab="highlight" aria-pressed="false">Highlights</button>
+        <button data-tab="trending" aria-pressed="false">Trending</button>
       </div>
       <div class="filters">
         <div class="chips" id="sizeChips" aria-label="Screen size">
           <button class="is-on" data-size="all" aria-pressed="true">All sizes</button>
-          {sizes.map(s => <button data-size={s} aria-pressed="false">{s}"</button>)}
+          {sizes.map(s => <button data-size={s} aria-pressed="false">{s}″</button>)}
         </div>
         <label class="select"><span class="sr">Sort</span>
           <select id="tvSort">
-            <option value="price-asc">Price: low to high</option>
-            <option value="price-desc">Price: high to low</option>
-            <option value="size-desc">Screen: largest first</option>
+            <option value="price-asc">Price, low to high</option>
+            <option value="price-desc">Price, high to low</option>
+            <option value="size-desc">Largest screen first</option>
           </select>
         </label>
       </div>
     </div>
-    <p class="result-count" id="tvCount" aria-live="polite">Showing {products.length} BRAVIA TVs</p>
+    <p class="result-count" id="tvCount" aria-live="polite">{products.length} televisions</p>
     <div class="grid grid--4" id="gridTv">{products.map(p => <ProductCard p={p} />)}</div>
   </div>
 </section>

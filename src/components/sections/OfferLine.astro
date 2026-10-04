@@ -1,0 +1,13 @@
+---
+import home from '../../content/settings/home.json';
+import { telLink } from '../../lib/site';
+---
+{home.offerTitle && (
+  <aside class="offerline s-deep" aria-label={home.offerTitle}>
+    <div class="container offerline__in reveal">
+      <span class="kicker">Limited period</span>
+      <p><strong>{home.offerTitle}.</strong> {home.offerText}</p>
+      <a class="link" href={telLink}>Ask for this week's price <span class="arr">→</span></a>
+    </div>
+  </aside>
+)}

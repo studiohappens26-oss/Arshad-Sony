@@ -96,6 +96,15 @@ Do these after launch; they matter most for local search:
 3. **Reviews:** ask happy customers for Google reviews. Reviews are one of the biggest factors in local ranking.
 4. **Store hours:** `store.json` lists the store as open Monday–Sunday, 09:00–18:00. Correct the days in the CMS if needed.
 
+## Design notes
+
+- **Palette:** near-black with a maroon undertone, warm ivory, and rose gold used only as a fine accent.
+- **Type:** Inter (display cut) for headings and text, Cormorant Garamond for serif accents.
+- **Product images are cut out** (transparent WebP) so they can sit on dark backgrounds. When adding products in the CMS, upload a **PNG or WebP with a transparent background**. Otherwise the product shows inside a white box.
+  - To cut out a white-background photo yourself, use any background remover, or ImageMagick:
+    `convert in.jpg -fuzz 8% -transparent white out.webp`
+- **Effects:** custom cursors per category, Rudy the mascot, a parallax TV glow in the hero, a pinned horizontal "flagships" scroll, line-by-line headline reveals and image parallax.
+
 ## Calls to action
 
 Customers can't buy online. Every product offers **Enquire now** (WhatsApp), **Call now** (phone) and **Visit the shop** (Google Maps directions).

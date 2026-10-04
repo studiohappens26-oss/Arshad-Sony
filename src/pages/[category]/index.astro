@@ -3,9 +3,10 @@ import Base from '../../layouts/Base.astro';
 import TvSection from '../../components/sections/TvSection.astro';
 import HeadphonesSection from '../../components/sections/HeadphonesSection.astro';
 import SoundbarsSection from '../../components/sections/SoundbarsSection.astro';
-import Promise from '../../components/sections/Promise.astro';
-import Visit from '../../components/sections/Visit.astro';
-import { getProducts, categories, productUrl, store, type Category } from '../../lib/site';
+import Flagships from '../../components/sections/Flagships.astro';
+import Showroom from '../../components/sections/Showroom.astro';
+import PageHead from '../../components/PageHead.astro';
+import { getProducts, categories, productUrl, store, inr, type Category } from '../../lib/site';
 
 export function getStaticPaths() {
   return (Object.keys(categories) as Category[]).map(key => ({ params: { category: categories[key].slug }, props: { key } }));
@@ -30,6 +31,12 @@ const meta = {
   }
 }[key];
 
+const head = {
+  tv: { title: 'Sony BRAVIA televisions', lede: 'Every BRAVIA we stock, from 32-inch HD Ready to 85-inch Mini LED and OLED. Compare them side by side at our HSR Layout showroom.' },
+  headphones: { title: 'Sony headphones', lede: 'Noise-cancelling wireless, bass-forward ULT WEAR, studio monitors and everyday in-ears. Try them on in store.' },
+  soundbars: { title: 'Sony soundbars & home theatre', lede: 'From a 2.1 soundbar with a wireless subwoofer to 360 Spatial Sound Mapping. Hear the difference in store.' }
+}[key];
+const flagships = key === 'tv' ? ['k-85xr90', 'k-65xr80', 'k-55xr70', 'xr-55x90l'].map(s => products.find(p => p.slug === s)).filter(Boolean) as typeof products : [];
 const site = Astro.site;
 const jsonLd = [
   {
@@ -46,10 +53,12 @@ const jsonLd = [
 ];
 ---
 <Base title={meta.title} description={meta.description} products={products} jsonLd={jsonLd} image={products[0]?.image}>
-  <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{cat.label}</span></nav>
-  {key === 'tv' && <TvSection products={products} level="h1" />}
-  {key === 'headphones' && <HeadphonesSection products={products} level="h1" />}
-  {key === 'soundbars' && <SoundbarsSection products={products} level="h1" />}
-  <Promise />
-  <Visit topic={`Sony ${cat.label.toLowerCase()}`} />
+  <PageHead crumbs={[['Home', '/'], [cat.label]]} title={head.title} lede={head.lede} mascot={cat.mascot} section={cat.cursor} cursor={cat.cursor}>
+    <p class="muted" style="margin:0">{products.length} models · from {inr(min)}</p>
+  </PageHead>
+  {key === 'tv' && flagships.length > 0 && <Flagships products={flagships} />}
+  {key === 'tv' && <TvSection products={products} heading={false} />}
+  {key === 'headphones' && <HeadphonesSection products={products} heading={false} />}
+  {key === 'soundbars' && <SoundbarsSection products={products} heading={false} />}
+  <Showroom />
 </Base>

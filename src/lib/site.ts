@@ -24,6 +24,22 @@ export const directionsLink = `https://www.google.com/maps/dir/?api=1&destinatio
 export const enquiryText = (p: Product) =>
   `Hi ${store.name}, I'm interested in the ${p.name} (${p.model}) listed at ${inr(p.price)}. Is it available?`;
 
+/* Display names: "BRAVIA 7 · 55″" + "4K Ultra HD Mini LED" instead of the long catalogue title */
+export function shortName(p: Product): string {
+  if (p.category === 'tv') return `${p.series} · ${p.size}″`;
+  if (p.category === 'headphones') return p.model;
+  return `${p.model} · ${p.channels}`;
+}
+export function subName(p: Product): string {
+  if (p.category === 'tv') return `${p.resolution} ${p.panel === 'LED' ? 'LED' : p.panel} · Google TV`;
+  if (p.category === 'headphones') {
+    const n = p.name.replace(/^Sony\s+/, '').replace(p.model, '').replace(/\s+/g, ' ').trim();
+    return n.length > 12 ? n : (p.type ?? n);
+  }
+  return p.name.replace(/^Sony\s+(New\s+)?/, '').replace(p.model, '').replace(p.channels ?? '', '').replace(/\s+/g, ' ').trim();
+}
+export const minPrice = (list: Product[]) => Math.min(...list.map(p => p.price));
+
 export function tagsFor(p: Product): string[] {
   if (p.category === 'tv') return [`${p.size}"`, p.series ?? '', p.panel && p.panel !== 'LED' ? p.panel : p.resolution ?? ''].filter(Boolean);
   if (p.category === 'headphones') return (p.type ?? '').split(' · ').filter(Boolean);

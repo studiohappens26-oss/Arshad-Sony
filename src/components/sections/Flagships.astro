@@ -1,0 +1,47 @@
+---
+import { inr, productUrl, waLink, enquiryText, type Product } from '../../lib/site';
+interface Props { products: Product[] }
+const { products } = Astro.props;
+const blurb: Record<string, string> = {
+  'BRAVIA 9': 'The brightest BRAVIA, with Mini LED backlighting.',
+  'BRAVIA 8': 'OLED, for perfect blacks and contrast.',
+  'BRAVIA 7': 'Mini LED brightness at a more accessible size and price.',
+  'BRAVIA XR': 'Full Array LED with Sony’s XR processor.'
+};
+---
+<section class="flag" id="flagships" data-section="tv" data-cursor="tv" style={`--n:${products.length}`}>
+  <div class="flag__sticky">
+    <div class="container flag__head">
+      <div>
+        <span class="kicker">In focus</span>
+        <h2 class="h2">The flagships.</h2>
+      </div>
+      <p class="flag__count"><b id="flagNow">01</b> / 0{products.length}</p>
+    </div>
+    <div class="flag__track" id="flagTrack">
+      {products.map(p => (
+        <article class="slide">
+          <div class="slide__img">
+            <img class="ambi" src={p.image} alt="" aria-hidden="true" loading="lazy" />
+            <img src={p.image} alt={p.name} loading="lazy" />
+          </div>
+          <div class="slide__copy">
+            <span class="kicker">{p.series} · {p.panel}</span>
+            <h3>{p.size} inches.</h3>
+            <p class="h3sub">{blurb[p.series ?? ''] ?? ''} {p.cm} cm, {p.resolution}, Google TV.</p>
+            <ul class="slide__specs">
+              <li><span>Model</span>{p.model}</li>
+              <li><span>Panel</span>{p.panel}</li>
+            </ul>
+            <p class="slide__price">{inr(p.price)}{p.mrp ? <s>{inr(p.mrp)}</s> : null}</p>
+            <div class="btn-row">
+              <a class="btn btn--primary" href={waLink(enquiryText(p))} target="_blank" rel="noopener">Enquire now</a>
+              <a class="btn btn--outline" href={productUrl(p)}>Details</a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="container"><div class="flag__bar"><i id="flagBar"></i></div></div>
+  </div>
+</section>

@@ -3,7 +3,7 @@
    can dress him differently (popcorn & remote for TVs, headphones for audio,
    a soundbar stage for home theatre, a phone for contact). */
 (function () {
-  const ROSE = '#ebb28c';
+  const ROSE = '#e6b08c';
   const INK = '#1c1416';
 
   const arms = {
@@ -60,9 +60,9 @@
     return `
 <svg class="rudy rudy--${v.mode}" viewBox="-14 -14 192 206" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="rdBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a1a2c"/><stop offset="1" stop-color="#4a0612"/></linearGradient>
-    <linearGradient id="rdScreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#32121a"/><stop offset="1" stop-color="#0e0406"/></linearGradient>
-    <linearGradient id="rdRose" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6d2b8"/><stop offset=".55" stop-color="#ebb28c"/><stop offset="1" stop-color="#a87452"/></linearGradient>
+    <linearGradient id="rdBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a0b1a"/><stop offset="1" stop-color="#5B0714"/></linearGradient>
+    <linearGradient id="rdScreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c0b0e"/><stop offset="1" stop-color="#140709"/></linearGradient>
+    <linearGradient id="rdRose" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6b08c"/><stop offset="1" stop-color="#e6b08c"/></linearGradient>
   </defs>
   <ellipse cx="80" cy="186" rx="44" ry="5" class="r-shadow"/>
   ${v.props.includes(props.soundbar) ? props.soundbar : ''}
@@ -70,9 +70,9 @@
     ${v.antenna ? `<g class="r-ant"><path d="M66 40 L54 14 M94 40 L106 14"/><circle cx="54" cy="12" r="5"/><circle cx="106" cy="12" r="5"/></g>` : ''}
     ${legs}
     ${v.arms.join('')}
-    <rect x="20" y="38" width="120" height="96" rx="24" fill="url(#rdBody)" stroke="url(#rdRose)" stroke-width="3"/>
+    <rect x="20" y="38" width="120" height="96" rx="22" fill="url(#rdBody)" stroke="#e6b08c" stroke-width="2.5"/>
     <rect x="31" y="49" width="98" height="70" rx="15" fill="url(#rdScreen)"/>
-    <path d="M38 56 h40 l-18 22 h-22z" fill="#fff" opacity=".06"/>
+    
     <g class="r-face">
       ${v.eyes}
       <ellipse cx="48" cy="98" rx="6" ry="3.4" fill="${ROSE}" opacity=".45"/>

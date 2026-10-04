@@ -1,24 +1,24 @@
 ---
 import ProductCard from '../ProductCard.astro';
 import type { Product } from '../../lib/site';
-interface Props { products: Product[]; level?: 'h1' | 'h2' }
-const { products, level = 'h2' } = Astro.props;
-const H = level;
+interface Props { products: Product[]; heading?: boolean }
+const { products, heading = true } = Astro.props;
 ---
-<section class="section hps" id="headphones" data-section="hp" data-cursor="hp">
-  <div class="hps__bg"><img src="/images/banners/headphones-neon.webp" alt="" class="parallax-img" data-speed="0.22" loading="lazy" /></div>
+<section class="section s-deep" id="headphones" data-section="hp" data-cursor="hp">
   <div class="container">
-    <div class="hps__intro">
-      <div class="head head--mascot head--light reveal">
-        <div class="head__mascot" data-mascot="hp"></div>
+    {heading && (
+      <div class="showcase">
         <div>
-          <p class="eyebrow eyebrow--light">{level === 'h1' ? 'Sony headphones in Bangalore' : 'Headphones'}</p>
-          <H class="split">Silence the city. <em>Hear everything.</em></H>
-          <p class="head__sub">From the studio-standard MDR-7506 to industry-leading noise cancelling on the WH-1000XM5. Try them on at our HSR Layout store.</p>
+          <div class="showcase__mascot" data-mascot="hp"></div>
+          <h2 class="h2 lines"><span class="ln"><span style="--i:0">Headphones</span></span></h2>
+          <p class="lede reveal">The WH-1000XM5 for noise cancelling on the commute, the ULT WEAR for bass, and the MDR-7506, a studio standard for decades. Try them on in store.</p>
+          <a class="link reveal" href="/headphones/">All headphones <span class="arr">→</span></a>
+        </div>
+        <div class="showcase__media reveal">
+          <img src="/images/banners/headphones-neon.webp" alt="Sony over-ear headphones lit in magenta and blue" loading="lazy" class="parallax-img" data-speed="0.14" />
         </div>
       </div>
-      <div class="waves" aria-hidden="true">{Array.from({ length: 24 }, () => <i></i>)}</div>
-    </div>
-    <div class="grid grid--4 grid--dark">{products.map(p => <ProductCard p={p} />)}</div>
+    )}
+    <div class="grid grid--4">{products.map(p => <ProductCard p={p} />)}</div>
   </div>
 </section>

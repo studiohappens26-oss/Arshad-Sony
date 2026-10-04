@@ -1,12 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
-import Contact from '../components/sections/Contact.astro';
-import Promise from '../components/sections/Promise.astro';
+import PageHead from '../components/PageHead.astro';
+import Showroom from '../components/sections/Showroom.astro';
+import Enquiry from '../components/sections/Enquiry.astro';
 import { store } from '../lib/site';
 ---
-<Base title={`Contact & Directions | ${store.name}, ${store.area}, Bengaluru`}
-  description={`Visit ${store.name} at ${store.streetAddress}, ${store.locality} ${store.postalCode}. Call ${store.phoneDisplay}, open ${store.hoursText}.`}>
-  <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span></nav>
-  <Contact level="h1" />
-  <Promise />
+<Base title={`Visit & Contact | ${store.name}, ${store.area}, Bengaluru`}
+  description={`Visit ${store.name} at ${store.streetAddress}, ${store.locality} ${store.postalCode}. Call ${store.phoneDisplay}, email ${store.email}. Open ${store.hoursText}.`}>
+  <PageHead crumbs={[['Home', '/'], ['Visit & contact']]} title="Visit & contact" lede="Contact us for enquiries, purchase assistance, or support. We respond promptly to all messages." mascot="contact" section="contact" />
+  <Showroom />
+  <Enquiry />
 </Base>

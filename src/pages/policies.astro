@@ -1,13 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
 import { store, telLink } from '../lib/site';
 ---
 <Base title={`Shipping, Terms & Privacy | ${store.name}, ${store.area}`} description={`Shipping & delivery, terms & conditions and privacy policy for ${store.name}, ${store.area}, Bengaluru.`}>
-  <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Policies</span></nav>
-  <section class="policy" data-section="about">
+  <PageHead crumbs={[['Home', '/'], ['Policies']]} title="Store policies" section="about" />
+  <section class="section s-paper policy" data-section="about">
     <div class="container">
-      <p class="eyebrow">Useful links</p>
-      <h1 class="policy__h1">Store <em>policies</em></h1>
       <div class="policy__wrap">
         <nav class="policy__toc" aria-label="Policies">
           <a href="#shipping">Shipping &amp; delivery</a>
@@ -19,7 +18,7 @@ import { store, telLink } from '../lib/site';
             <h2>Shipping &amp; Delivery</h2>
             <p>Orders are delivered through our own delivery team or registered domestic courier companies. Orders are dispatched within 0–7 business days, or as per the delivery date agreed at the time of order confirmation, and delivery is subject to courier company norms.</p>
             <p>We are not liable for delays caused by the courier company, and only guarantee to hand over the consignment within 0–7 business days from the date of the order and payment, or as per the delivery date agreed at the time of order confirmation. Delivery of all orders will be made to the address provided by the buyer.</p>
-            <p>Delivery details will be shared with you by phone or WhatsApp. For any queries or issues regarding delivery, call us on <a href={telLink}>{store.phoneDisplay}</a> or <a class="link-arrow" href="/contact/">contact us</a>.</p>
+            <p>Delivery details will be shared with you by phone or WhatsApp. For any queries or issues regarding delivery, call us on <a href={telLink}>{store.phoneDisplay}</a> or <a href="/contact/">contact us</a>.</p>
           </article>
 
           <article id="terms">
@@ -61,7 +60,7 @@ import { store, telLink } from '../lib/site';
             <h3>Changes to this privacy policy</h3>
             <p>We may update this Privacy Policy from time to time to reflect changes in our practices and legal requirements. We encourage you to review this policy periodically.</p>
             <h3>Contact us</h3>
-            <p>If you have any questions about this Privacy Policy or our practices, email <a href={`mailto:${store.email}`}>{store.email}</a>, call <a href={telLink}>{store.phoneDisplay}</a> or <a class="link-arrow" href="/contact/">contact us</a>.</p>
+            <p>If you have any questions about this Privacy Policy or our practices, email <a href={`mailto:${store.email}`}>{store.email}</a>, call <a href={telLink}>{store.phoneDisplay}</a> or <a href="/contact/">contact us</a>.</p>
           </article>
         </div>
       </div>

@@ -1,27 +1,28 @@
 ---
 import Icon from './Icon.astro';
-import { categories, inr, productUrl, tagsFor, waLink, enquiryText, telLink, type Product } from '../lib/site';
-interface Props { p: Product; headingLevel?: 'h2' | 'h3' }
-const { p, headingLevel = 'h3' } = Astro.props;
-const H = headingLevel;
+import { categories, inr, productUrl, shortName, subName, waLink, enquiryText, telLink, type Product } from '../lib/site';
+interface Props { p: Product }
+const { p } = Astro.props;
 const save = p.mrp ? Math.round((1 - p.price / p.mrp) * 100) : 0;
-const badge = p.tags.includes('new') ? 'New' : p.tags.includes('highlight') ? 'Highlight' : p.tags.includes('trending') ? 'Trending' : '';
+const flag = p.tags.includes('new') ? 'New' : p.tags.includes('highlight') ? 'Highlight' : p.tags.includes('trending') ? 'Trending' : '';
 const url = productUrl(p);
 ---
-<article class="card" data-id={p.slug} data-cursor={categories[p.category].cursor} data-cursor-label="View"
+<article class="pcard reveal" data-id={p.slug} data-cursor={categories[p.category].cursor} data-cursor-label="View"
   data-price={p.price} data-size={p.size ?? ''} data-tags={p.tags.join(' ')}>
-  <a href={url} class="card__media" tabindex="-1" aria-hidden="true">
-    {badge && <span class="badge">{badge}</span>}
-    {save > 0 && <span class="badge badge--save">Save {save}%</span>}
-    <img src={p.image} alt="" loading="lazy" decoding="async" width="1000" height="1000" />
-    <span class="card__glare"></span>
-  </a>
-  <div class="card__meta">{tagsFor(p).map(t => <span class="tag">{t}</span>)}</div>
-  <H class="card__title"><a href={url}>{p.name}</a></H>
-  <div class="price"><b>{inr(p.price)}</b>{p.mrp ? <s>{inr(p.mrp)}</s> : null}</div>
-  <div class="card__actions">
-    <a class="btn btn--solid" href={waLink(enquiryText(p))} target="_blank" rel="noopener" data-cursor-label="Enquire">Enquire now</a>
-    <a class="card__icon" href={telLink} aria-label={`Call now about ${p.model}`} data-cursor-label="Call"><Icon name="phone" /></a>
-    <button class="card__icon card__quick" type="button" aria-label={`Quick view ${p.model}`} data-quick={p.slug}><Icon name="eye" /></button>
+  <div class="pcard__tile">
+    {flag && <span class="pcard__flag">{flag}</span>}
+    {save > 0 && <span class="pcard__save">−{save}%</span>}
+    <img src={p.image} alt={p.name} loading="lazy" decoding="async" />
+  </div>
+  <p class="pcard__model">{p.model}</p>
+  <h3 class="pcard__name"><a href={url}>{shortName(p)}</a></h3>
+  <p class="pcard__sub">{subName(p)}</p>
+  <div class="pcard__foot">
+    <span class="pcard__price">{inr(p.price)}{p.mrp ? <s>{inr(p.mrp)}</s> : null}</span>
+    <span class="pcard__acts">
+      <a class="pcard__act" href={waLink(enquiryText(p))} target="_blank" rel="noopener" aria-label={`Enquire now about ${p.model} on WhatsApp`} data-cursor-label="Enquire"><Icon name="wa" /></a>
+      <a class="pcard__act" href={telLink} aria-label={`Call now about ${p.model}`} data-cursor-label="Call"><Icon name="phone" /></a>
+      <button class="pcard__act" type="button" aria-label={`Quick view ${p.model}`} data-quick={p.slug} data-cursor-label="Quick view"><Icon name="eye" /></button>
+    </span>
   </div>
 </article>
