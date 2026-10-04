@@ -93,30 +93,33 @@ function ovalLoop(cr: number, cy: number, rr: number, ry: number, n = 28): THREE
 export function buildHeadphones(m: Mats): THREE.Group {
   const hp = new THREE.Group();
 
-  // headband: a flat rounded strap swept along an arch
-  const arch = (rx: number, ry: number, y0: number, from: number, to: number) =>
-    new THREE.CatmullRomCurve3(Array.from({ length: 25 }, (_, i) => {
-      const a = from + (to - from) * (i / 24);
-      return new THREE.Vector3(Math.sin(a) * rx, y0 + Math.cos(a) * ry, 0);
-    }));
+  // headband: a flat rounded strap. At rest the band is widest about a third of the way down
+  // and tucks back in at the ends, so the cups sit close together as if gently gripping a head.
+  const CUP_X = 0.35;
+  const mirror = (pts: [number, number][]) => [...pts.slice(1).reverse().map(([x, y]) => new THREE.Vector3(-x, y, 0)), ...pts.map(([x, y]) => new THREE.Vector3(x, y, 0))];
+  const bandPath = new THREE.CatmullRomCurve3(mirror([[0, 0.53], [0.15, 0.517], [0.27, 0.468], [0.355, 0.38], [0.402, 0.26], [0.415, 0.13], [0.402, 0.02], [0.376, -0.06]]), false, 'centripetal');
   const strap = new THREE.Mesh(
-    new THREE.ExtrudeGeometry(roundedRect(0.03, 0.078, 0.013), { steps: 160, extrudePath: arch(0.47, 0.6, -0.06, -Math.PI / 2, Math.PI / 2), bevelEnabled: false }),
+    new THREE.ExtrudeGeometry(roundedRect(0.03, 0.078, 0.013), { steps: 180, extrudePath: bandPath, bevelEnabled: false }),
     m.softTouch
   );
   hp.add(strap);
   // leather cushion under the top of the band
+  const padPath = new THREE.CatmullRomCurve3(mirror([[0, 0.502], [0.14, 0.49], [0.25, 0.445], [0.31, 0.39]]), false, 'centripetal');
   const pad = new THREE.Mesh(
-    new THREE.ExtrudeGeometry(roundedRect(0.022, 0.062, 0.01), { steps: 90, extrudePath: arch(0.442, 0.572, -0.06, -1.05, 1.05), bevelEnabled: false }),
+    new THREE.ExtrudeGeometry(roundedRect(0.022, 0.062, 0.01), { steps: 90, extrudePath: padPath, bevelEnabled: false }),
     m.leather
   );
   hp.add(pad);
 
+  const shellMat = m.softTouch.clone();
+  shellMat.side = THREE.DoubleSide;
+
   [-1, 1].forEach(s => {
     // brushed sliders dropping out of the band, and the hinge yoke
     const slider = new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.06, 6, 20), m.brushed);
-    slider.position.set(s * 0.475, -0.1, 0);
+    slider.position.set(s * 0.376, -0.1, 0);
     const yoke = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.06, 0.075, 4, 0.02), m.softTouch);
-    yoke.position.set(s * 0.488, -0.155, 0);
+    yoke.position.set(s * 0.374, -0.155, 0);
     hp.add(slider, yoke);
 
     // ear cup: lathe shell + pillow cushion + fabric liner, revolved about its own axis
@@ -125,12 +128,14 @@ export function buildHeadphones(m: Mats): THREE.Group {
       [0, 0.085], [0.06, 0.084], [0.11, 0.08], [0.145, 0.07], [0.168, 0.055], [0.181, 0.035],
       [0.186, 0.012], [0.184, -0.008], [0.176, -0.02], [0.16, -0.026]
     ].map(([r, y]) => new THREE.Vector2(r, y));
-    const shell = new THREE.Mesh(new THREE.LatheGeometry(shellProfile, 96), m.softTouch);
+    // the lathe profile winds inward, so render the shell double-sided to keep it solid from every angle
+    const shell = new THREE.Mesh(new THREE.LatheGeometry(shellProfile, 96), shellMat);
     const seam = new THREE.Mesh(new THREE.TorusGeometry(0.183, 0.0035, 8, 128), m.copper);
     seam.rotation.x = Math.PI / 2; seam.position.y = -0.012;
     const cushion = new THREE.Mesh(new THREE.LatheGeometry(ovalLoop(0.128, -0.06, 0.05, 0.034), 96), m.leather);
-    const linerDisc = new THREE.Mesh(new THREE.CircleGeometry(0.085, 64), m.liner);
-    linerDisc.rotation.x = Math.PI / 2; linerDisc.position.y = -0.03;
+    // fabric baffle closing the cup behind the cushion (so the shell never looks hollow)
+    const linerDisc = new THREE.Mesh(new THREE.CircleGeometry(0.172, 96), m.liner);
+    linerDisc.rotation.x = Math.PI / 2; linerDisc.position.y = -0.027;
     const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.004, 96), m.softTouch);
     plate.position.y = 0.086;
     cupInner.add(shell, seam, cushion, linerDisc, plate);
@@ -144,9 +149,9 @@ export function buildHeadphones(m: Mats): THREE.Group {
     cupInner.scale.set(1.22, 1, 1);        // oval ear cup (taller than wide)
     const cup = new THREE.Group();
     cup.add(cupInner);
-    cup.rotation.z = -s * Math.PI / 2;     // outer face points away from the head
+    cup.rotation.z = -s * (Math.PI / 2 + 0.1); // outer face points away from the head; bottoms tilt inward (clamp)
     cup.rotation.y = s * 0.12;             // slight inward angle, as worn
-    cup.position.set(s * 0.5, -0.385, 0);
+    cup.position.set(s * CUP_X, -0.385, 0);
     hp.add(cup);
   });
   shadowAll(hp);

@@ -196,7 +196,7 @@ const tvCount = all.filter(p => p.category === 'tv').length;
     /* ---------- headphones ---------- */
     const hp = buildHeadphones(M);
     hp.position.set(-3.4, 1.2, 1.4);
-    hp.scale.setScalar(0.42);
+    hp.scale.setScalar(0.46);
     hp.rotation.set(0.1, 0.6, 0);
     scene.add(hp);
 
@@ -262,7 +262,7 @@ const tvCount = all.filter(p => p.category === 'tv').length;
       screenMat.uniforms.uMix.value = mixNow;
       // headphones join the scene from the audio section onward
       const hv = Math.min(1, Math.max(0, (seg - 2.2) / 0.7));
-      hp.scale.setScalar(0.42 * ease(hv));
+      hp.scale.setScalar(0.46 * ease(hv));
       hp.visible = hv > 0.001;
       if (!reduced) {
         screenMat.uniforms.uTime.value = t;
