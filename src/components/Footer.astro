@@ -1,0 +1,28 @@
+---
+import Seal from './Seal.astro';
+import { store, telLink, mapsLink } from '../lib/site';
+---
+<footer class="footer">
+  <div class="footer__big" aria-hidden="true">RDL Sony</div>
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <img src="/brand/logo-mark.svg" alt="" width="56" height="56" />
+      <p class="footer__name">RDL <span>Sony Centre</span></p>
+      <p>We offer a wide range of high-quality products.</p>
+      <address class="footer__nap">
+        <a href={mapsLink} target="_blank" rel="noopener">{store.streetAddress}, {store.locality}, {store.region} {store.postalCode}</a><br />
+        <a href={telLink}>{store.phoneDisplay}</a> · <a href={`mailto:${store.email}`}>{store.email}</a><br />
+        Open {store.hoursText}
+      </address>
+      <div class="footer__auth"><img src="/brand/sony-authorised-badge.svg" alt="Sony Authorised Dealer" width="64" height="64" /><span>Sony Authorised Dealer<br /><small>HSR Layout, Bengaluru</small></span></div>
+    </div>
+    <div><h2 class="footer__h">Support</h2><a href="/">Home</a><a href="/about/">About us</a><a href="/contact/">Contact us</a></div>
+    <div><h2 class="footer__h">Useful links</h2><a href="/policies/#shipping">Shipping policy</a><a href="/policies/#terms">Terms &amp; conditions</a><a href="/policies/#privacy">Privacy policy</a></div>
+    <div><h2 class="footer__h">Categories</h2><a href="/televisions/">Televisions</a><a href="/soundbars/">Soundbars</a><a href="/headphones/">Headphones</a></div>
+  </div>
+  <div class="container footer__base">
+    <p>© {new Date().getFullYear()} {store.name}, {store.area}. All rights reserved.</p>
+    <p class="footer__tm">Sony, BRAVIA and related marks are trademarks of Sony Group Corporation or its affiliates.</p>
+  </div>
+</footer>
+<a href="/about/" class="float-badge" aria-label="Sony Authorised Dealer"><Seal id="float" label={false} /></a>

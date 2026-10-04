@@ -1,0 +1,19 @@
+{
+  "name": "RDL Sony Centre",
+  "legalName": "RDL SONY HSRLAYOUT",
+  "area": "HSR Layout",
+  "city": "Bengaluru",
+  "phoneDisplay": "+91 93530 99534",
+  "phone": "+919353099534",
+  "whatsapp": "919353099534",
+  "email": "sgdthgsk@gmail.com",
+  "streetAddress": "Star - HSR Layout VGR Essor, 6th Main Rd, opposite Canara Bank, 7th Sector, HSR Layout",
+  "locality": "Bengaluru",
+  "region": "Karnataka",
+  "postalCode": "560102",
+  "mapsQuery": "VGR Essor, 6th Main Rd, opposite Canara Bank, 7th Sector, HSR Layout, Bengaluru, Karnataka 560102",
+  "hoursText": "9 am to 6 pm",
+  "openingDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+  "opens": "09:00",
+  "closes": "18:00"
+}

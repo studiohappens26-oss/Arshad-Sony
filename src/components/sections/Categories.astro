@@ -1,0 +1,29 @@
+---
+interface Props { counts: Record<string, number> }
+const { counts } = Astro.props;
+---
+<section class="section categories" id="categories" data-section="categories">
+  <div class="container">
+    <div class="head reveal">
+      <p class="eyebrow">Shop by category</p>
+      <h2 class="split">Pick your <em>Sony</em> experience</h2>
+    </div>
+    <div class="cat-grid">
+      <a href="/televisions/" class="cat tilt" data-cursor="tv" data-cursor-label="Watch">
+        <div class="cat__bg"></div><div class="cat__mascot" data-mascot="tv"></div>
+        <img src="/images/products/k-65xr80.webp" alt="" loading="lazy" width="1000" height="1000" />
+        <div class="cat__txt"><span class="cat__n">{counts.tv} models</span><h3>Televisions</h3><p>BRAVIA 2, 3, 7, 8, 9 &amp; XR</p></div>
+      </a>
+      <a href="/headphones/" class="cat tilt" data-cursor="hp" data-cursor-label="Listen">
+        <div class="cat__bg"></div><div class="cat__mascot" data-mascot="hp"></div>
+        <img src="/images/products/wh-ult900n.webp" alt="" loading="lazy" width="1000" height="1000" />
+        <div class="cat__txt"><span class="cat__n">{counts.headphones} models</span><h3>Headphones</h3><p>Studio, ULT WEAR &amp; 1000X</p></div>
+      </a>
+      <a href="/soundbars/" class="cat tilt" data-cursor="sb" data-cursor-label="Feel it">
+        <div class="cat__bg"></div><div class="cat__mascot" data-mascot="sb"></div>
+        <img src="/images/products/ht-a3000-51.webp" alt="" loading="lazy" width="1000" height="1000" />
+        <div class="cat__txt"><span class="cat__n">{counts.soundbars} models</span><h3>Soundbars</h3><p>2.1ch to 5.1ch home theatre</p></div>
+      </a>
+    </div>
+  </div>
+</section>

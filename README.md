@@ -1,52 +1,101 @@
 # RDL Sony Centre · HSR Layout
 
-Website for RDL Sony Centre, a Sony authorised dealer in HSR Layout, Bengaluru.
+Website for **RDL Sony Centre**, a Sony authorised dealer in HSR Layout, Bengaluru.
 
-- **Colours:** maroon, rose gold, copper and cream, taken from neethmedappa.com
-- **Layout:** modelled on shopatsc.com (category rails, product grids, offer bands, trust strip)
-- **Content:** catalogue, about, contact and policy text from arshad-sonyhsrlayout.com
+- **Content:** arshad-sonyhsrlayout.com
+- **Colours:** neethmedappa.com
+- **Layout:** modelled on shopatsc.com
 
-## What's inside
+## Stack
 
-| Path | What it is |
-| --- | --- |
-| `index.html` | The storefront: hero, categories, new arrivals, TVs (tabs, size filter, sort), headphones, soundbars, about, why us, gallery, contact |
-| `policies.html` | Shipping, terms and privacy |
-| `data/products.json` | **The catalogue (28 products).** Edit prices, add or remove models here. The page renders from this file. |
-| `assets/brand/` | Logo (`logo.svg`), logo mark / favicon (`logo-mark.svg`) and the Sony Authorised Dealer badge |
-| `assets/js/mascot.js` | **Rudy**, the mascot: one SVG character with an outfit per section |
-| `assets/js/main.js` | Custom cursors, parallax, reveals, tilt, filters, quick-view modal, WhatsApp forms |
-| `assets/css/style.css` | All styling; palette tokens are at the top |
-| `_headers` | Cache and security headers for Cloudflare Pages |
+| Part | Choice | Why |
+| --- | --- | --- |
+| Site | **Astro** (static) | Every page is plain HTML that Google can read, and pages load fast |
+| Hosting | **Cloudflare Pages** | Free, fast in India, preview URL for every branch |
+| CMS | **Sveltia CMS** at `/admin/` | Free and open source. Edits are saved to GitHub, so there's no database or server to run |
+| Enquiries | **WhatsApp** links | Each enquiry opens WhatsApp with the product details filled in |
 
-### Effects
-
-- **Section cursors:** a TV cursor over televisions, headphones with pulsing sound waves over audio, and animated equaliser bars over soundbars. A label reads "View" on product cards and the cursor switches colour on dark sections. Touch devices keep the normal cursor.
-- **Parallax:** layered hero products that follow the mouse and the scroll, plus parallax backgrounds on the offer, headphones, soundbar and about images and a staggered gallery.
-- **Rudy the mascot:** waves in the hero; has popcorn, a remote and star eyes for TVs; wears headphones and bobs for audio; dances on a soundbar with music notes; holds a phone in contact. His eyes follow the cursor. He follows you down the page as a companion and gives tips when clicked.
-- **Other effects:** a preloader that draws the logo, split-text headline reveals, 3D tilt with glare on cards, magnetic buttons, a marquee, counters and a scroll progress bar.
-- **Sony Authorised Dealer badge:** shown in the top bar, the header pill, the hero seal, a floating corner badge, the about section, the footer and the product modal.
-- **Enquiries:** every enquiry goes to WhatsApp (+91 93530 99534) with the product prefilled.
-- **Reduced motion:** visitors who set `prefers-reduced-motion` get a calm, static version.
-
-## Run locally
-
-```bash
-python3 -m http.server 8080   # then open http://localhost:8080
+```
+src/
+  content/products/*.json      ← one file per product (edited in the CMS)
+  content/settings/store.json  ← address, phone, email, hours (edited in the CMS)
+  content/settings/home.json   ← homepage headline & offer text (edited in the CMS)
+  pages/                       ← home, /televisions/, /headphones/, /soundbars/,
+                                  one page per product, /about/, /contact/, /policies/
+  components/                  ← header, footer, product card, page sections
+  scripts/main.js, mascot.js   ← cursors, parallax, Rudy the mascot, filters
+  styles/global.css            ← all styling (palette tokens at the top)
+public/
+  admin/                       ← Sveltia CMS (index.html + config.yml)
+  brand/                       ← logo, logo mark, Sony Authorised Dealer badge
+  images/, fonts/, _headers
 ```
 
-(Opening `index.html` directly from disk won't load the catalogue, because browsers block `fetch` on `file://`.)
+## Preview the website
 
-## Deploy (Cloudflare Pages)
+### On your computer
 
-1. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git → pick this repo.
-2. Framework preset: **None**. Build command: *(empty)*. Output directory: `/`.
-3. Add the custom domain. Every push to the main branch deploys; every other branch gets a preview URL.
+You need [Node.js 22+](https://nodejs.org).
 
-## Before going live: check these
+```bash
+git clone https://github.com/studiohappens26-oss/Arshad-Sony.git
+cd Arshad-Sony
+git checkout claude/pensive-babbage-9i69si
+npm install
+npm run dev        # open http://localhost:4321
+```
 
-- **Email:** the source site lists `sgdthgsk@gmail.com`, which looks like a placeholder, so it is left out. Add the real address to the contact section.
-- **Promises in the trust strip:** "Free delivery" and "30-day returns" come from the source site's template. Confirm the store actually offers them.
-- **Policy text:** the shipping policy mentions international shipping and tracking emails (template wording). Have the owner confirm it.
-- **Badge:** the authorised-dealer badge is an original design. If Sony India supplied official dealer badge artwork, swap it into `assets/brand/sony-authorised-badge.svg`.
-- **Banner resolution:** the living-room and neon-headphone images are only 1000 px wide. Higher-resolution photos would look sharper in the full-width offer band.
+### Online, with a shareable link (Cloudflare Pages)
+
+1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick `Arshad-Sony`.
+2. Set these build settings:
+   - Framework preset: **Astro**
+   - Build command: `npm run build`
+   - Output directory: `dist`
+3. Add the environment variable `NODE_VERSION` = `22` (the repo's `.nvmrc` sets this too).
+4. Save and deploy.
+   - Every branch gets its own preview link, e.g. `https://claude-pensive-babbage-9i69si.<project>.pages.dev`.
+   - The production branch (`main`) goes live on your domain.
+5. Custom domain: Pages project → **Custom domains** → add `arshad-sonyhsrlayout.com`. The domain is also set in `astro.config.mjs` (`site`), which builds canonical URLs and the sitemap.
+
+## CMS setup (Sveltia CMS)
+
+Store staff edit products, prices, images, the address, opening hours and homepage text at **`https://<your-domain>/admin/`**. Each save commits to GitHub, and Cloudflare republishes the site in about a minute.
+
+One-time setup (about 10 minutes):
+
+1. **Deploy the sign-in helper.**
+   - Deploy [sveltia-cms-auth](https://github.com/sveltia/sveltia-cms-auth) to Cloudflare Workers using its "Deploy to Cloudflare" button. It's free.
+   - Note the worker URL, e.g. `https://sveltia-cms-auth.<you>.workers.dev`.
+2. **Create a GitHub OAuth App** (GitHub → Settings → Developer settings → OAuth Apps → New):
+   - Homepage URL: your site URL
+   - Authorization callback URL: `https://sveltia-cms-auth.<you>.workers.dev/callback`
+3. **Connect the two.**
+   - In the worker's settings, add the variables `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` (as a secret) from the OAuth app.
+   - Add `ALLOWED_DOMAINS` = your domain.
+4. **Point the CMS at the worker.** In `public/admin/config.yml`, replace `base_url` with your worker URL.
+5. **Check the branch.** The CMS commits to `main` (`backend.branch`). Merge this branch into `main` first, or change that line.
+6. **Give staff access.** Add each staff member as a collaborator on the GitHub repo. They sign in with their own GitHub account.
+
+You can also try the CMS before the sign-in setup: run `npm run dev`, open `http://localhost:4321/admin/` in Chrome or Edge, and choose **"Work with Local Repository"**.
+
+## Google ranking (SEO)
+
+Already built in:
+
+- **Product pages:** one page per product, with its own title, description and `Product` structured data (price in INR).
+- **Search-friendly titles:** "Sony BRAVIA 7 55" K-55XR70 Price in Bangalore | RDL Sony Centre, HSR Layout".
+- **Local business data:** `ElectronicsStore` structured data with the address, phone, email and opening hours on every page.
+- **Breadcrumbs:** breadcrumb structured data on category and product pages.
+- **Indexing:** `sitemap-index.xml`, `robots.txt`, canonical URLs, Open Graph tags and a 404 page.
+
+Do these after launch; they matter most for local search:
+
+1. **Google Business Profile:** claim or verify the store listing. Use exactly the same name, address and phone as the website, and add the website link, photos and opening hours.
+2. **Google Search Console:** add the domain and submit `https://<domain>/sitemap-index.xml`.
+3. **Reviews:** ask happy customers for Google reviews. Reviews are one of the biggest factors in local ranking.
+4. **Store hours:** `store.json` lists the store as open Monday–Sunday, 09:00–18:00. Correct the days in the CMS if needed.
+
+## Calls to action
+
+Customers can't buy online. Every product offers **Enquire now** (WhatsApp), **Call now** (phone) and **Visit the shop** (Google Maps directions).

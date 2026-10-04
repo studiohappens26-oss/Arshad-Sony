@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import Categories from '../components/sections/Categories.astro';
+import Arrivals from '../components/sections/Arrivals.astro';
+import Offer from '../components/sections/Offer.astro';
+import TvSection from '../components/sections/TvSection.astro';
+import HeadphonesSection from '../components/sections/HeadphonesSection.astro';
+import SoundbarsSection from '../components/sections/SoundbarsSection.astro';
+import About from '../components/sections/About.astro';
+import Why from '../components/sections/Why.astro';
+import Gallery from '../components/sections/Gallery.astro';
+import Promise from '../components/sections/Promise.astro';
+import News from '../components/sections/News.astro';
+import Contact from '../components/sections/Contact.astro';
+import { getProducts, store } from '../lib/site';
+
+const all = await getProducts();
+const tvs = all.filter(p => p.category === 'tv');
+const hps = all.filter(p => p.category === 'headphones');
+const sbs = all.filter(p => p.category === 'soundbars');
+const fresh = all.filter(p => p.tags.includes('new')).slice(0, 4);
+---
+<Base
+  title={`${store.name}, ${store.area} | Sony Authorised Dealer in Bengaluru`}
+  description={`Sony authorised dealer in ${store.area}, Bengaluru. Genuine Sony BRAVIA TVs from 32" to 98", headphones and soundbars at the best prices in Bangalore. Call ${store.phoneDisplay} or visit our store.`}
+  products={all}
+  loader
+>
+  <Hero modelCount={all.length} />
+  <Categories counts={{ tv: tvs.length, headphones: hps.length, soundbars: sbs.length }} />
+  <Arrivals products={fresh} />
+  <Offer />
+  <TvSection products={tvs} />
+  <HeadphonesSection products={hps} />
+  <SoundbarsSection products={sbs} />
+  <About />
+  <Why />
+  <Gallery />
+  <Promise />
+  <News />
+  <Contact />
+</Base>

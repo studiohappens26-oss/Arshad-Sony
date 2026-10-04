@@ -1,0 +1,24 @@
+---
+import ProductCard from '../ProductCard.astro';
+import type { Product } from '../../lib/site';
+interface Props { products: Product[]; level?: 'h1' | 'h2' }
+const { products, level = 'h2' } = Astro.props;
+const H = level;
+---
+<section class="section hps" id="headphones" data-section="hp" data-cursor="hp">
+  <div class="hps__bg"><img src="/images/banners/headphones-neon.webp" alt="" class="parallax-img" data-speed="0.22" loading="lazy" /></div>
+  <div class="container">
+    <div class="hps__intro">
+      <div class="head head--mascot head--light reveal">
+        <div class="head__mascot" data-mascot="hp"></div>
+        <div>
+          <p class="eyebrow eyebrow--light">{level === 'h1' ? 'Sony headphones in Bangalore' : 'Headphones'}</p>
+          <H class="split">Silence the city. <em>Hear everything.</em></H>
+          <p class="head__sub">From the studio-standard MDR-7506 to industry-leading noise cancelling on the WH-1000XM5. Try them on at our HSR Layout store.</p>
+        </div>
+      </div>
+      <div class="waves" aria-hidden="true">{Array.from({ length: 24 }, () => <i></i>)}</div>
+    </div>
+    <div class="grid grid--4 grid--dark">{products.map(p => <ProductCard p={p} />)}</div>
+  </div>
+</section>

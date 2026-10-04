@@ -1,0 +1,113 @@
+# Sveltia CMS: https://github.com/sveltia/sveltia-cms
+# Edits are committed to GitHub; Cloudflare Pages rebuilds the site automatically.
+backend:
+  name: github
+  repo: studiohappens26-oss/Arshad-Sony
+  branch: main
+  # GitHub sign-in goes through a small Cloudflare Worker (sveltia-cms-auth). See README → "CMS setup".
+  base_url: https://sveltia-cms-auth.YOUR-SUBDOMAIN.workers.dev
+
+site_url: https://arshad-sonyhsrlayout.com
+logo_url: /brand/logo-mark.svg
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: products
+    label: Products
+    label_singular: Product
+    description: Every Sony product shown on the website. Each one gets its own page.
+    folder: src/content/products
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: name
+    slug: "{{fields.slug}}"
+    summary: "{{model}} · ₹{{price}}"
+    sortable_fields: [order, price, name, model]
+    view_groups:
+      - { label: Category, field: category }
+    media_folder: /public/images/products
+    public_folder: /images/products
+    fields:
+      - { label: Product name, name: name, widget: string, hint: "Full name as it should appear, e.g. Sony BRAVIA 7 Series 139 cm (55) 4K Ultra HD AI Smart Mini LED Google TV K-55XR70" }
+      - { label: Model number, name: model, widget: string, hint: "e.g. K-55XR70" }
+      - label: URL slug
+        name: slug
+        widget: string
+        hint: "Used in the web address, e.g. k-55xr70 → /televisions/k-55xr70/. Lowercase letters, numbers and hyphens only. Don't change it after publishing."
+        pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers and hyphens only']
+      - label: Category
+        name: category
+        widget: select
+        options:
+          - { label: Television, value: tv }
+          - { label: Headphones, value: headphones }
+          - { label: Soundbar / Home theatre, value: soundbars }
+      - { label: Price (₹), name: price, widget: number, value_type: int, min: 0 }
+      - { label: MRP (₹, optional), name: mrp, widget: number, value_type: int, min: 0, required: false, hint: "Only if higher than the price; shows a 'Save x%' badge" }
+      - { label: Product image, name: image, widget: image, hint: "Square image on a white background works best (1000 × 1000)" }
+      - label: Labels
+        name: tags
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - { label: New arrival (shown on the homepage), value: new }
+          - { label: Highlight of the week, value: highlight }
+          - { label: Trending style, value: trending }
+      - { label: Description (optional), name: description, widget: text, required: false, hint: "Leave empty to use an automatic description" }
+      - { label: Display order, name: order, widget: number, value_type: int, default: 999, hint: "Lower numbers show first" }
+      - { label: Hide from website, name: hidden, widget: boolean, default: false, required: false }
+      - { label: "TV · Screen size (inches)", name: size, widget: number, value_type: int, required: false }
+      - { label: "TV · Screen size (cm)", name: cm, widget: number, value_type: int, required: false }
+      - { label: "TV · Series", name: series, widget: string, required: false, hint: "e.g. BRAVIA 2 II, BRAVIA 7, BRAVIA XR" }
+      - { label: "TV · Resolution", name: resolution, widget: select, required: false, options: ["HD Ready", "Full HD", "4K Ultra HD", "8K"] }
+      - { label: "TV · Panel", name: panel, widget: select, required: false, options: ["LED", "Full Array LED", "Mini LED", "OLED", "QD-OLED"] }
+      - { label: "Headphones · Type", name: type, widget: string, required: false, hint: "e.g. Wireless · Noise Cancelling" }
+      - { label: "Soundbar · Channels", name: channels, widget: string, required: false, hint: "e.g. 5.1ch" }
+
+  - name: settings
+    label: Store settings
+    files:
+      - name: store
+        label: Store details (address, phone, hours)
+        file: src/content/settings/store.json
+        fields:
+          - { label: Store name, name: name, widget: string }
+          - { label: Registered / legal name, name: legalName, widget: string }
+          - { label: Area, name: area, widget: string }
+          - { label: City, name: city, widget: string }
+          - { label: Phone (as displayed), name: phoneDisplay, widget: string }
+          - { label: Phone (for call links, with +91), name: phone, widget: string }
+          - { label: WhatsApp number (digits only, with 91), name: whatsapp, widget: string }
+          - { label: Email, name: email, widget: string }
+          - { label: Street address, name: streetAddress, widget: string }
+          - { label: Locality, name: locality, widget: string }
+          - { label: State, name: region, widget: string }
+          - { label: PIN code, name: postalCode, widget: string }
+          - { label: Google Maps search text, name: mapsQuery, widget: string }
+          - { label: Opening hours (as displayed), name: hoursText, widget: string }
+          - label: Open on
+            name: openingDays
+            widget: select
+            multiple: true
+            options: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+          - { label: Opens at (24h), name: opens, widget: string, hint: "e.g. 09:00" }
+          - { label: Closes at (24h), name: closes, widget: string, hint: "e.g. 18:00" }
+      - name: home
+        label: Homepage text
+        file: src/content/settings/home.json
+        fields:
+          - { label: Hero small heading, name: heroEyebrow, widget: string }
+          - { label: Hero headline, name: heroTitle, widget: string }
+          - { label: Hero headline (gold italic part), name: heroTitleAccent, widget: string }
+          - { label: Hero paragraph, name: heroLead, widget: text }
+          - { label: Offer band small heading, name: offerEyebrow, widget: string }
+          - { label: Offer headline, name: offerTitle, widget: string }
+          - { label: Offer headline (gold italic part), name: offerTitleAccent, widget: string }
+          - { label: Offer paragraph, name: offerText, widget: text }

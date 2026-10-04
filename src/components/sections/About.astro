@@ -1,0 +1,25 @@
+---
+import Seal from '../Seal.astro';
+interface Props { level?: 'h1' | 'h2' }
+const { level = 'h2' } = Astro.props;
+const H = level;
+---
+<section class="section about" id="about" data-section="about">
+  <div class="container about__grid">
+    <div class="about__media reveal">
+      <div class="about__frame"><img src="/images/banners/living-room-tv.webp" alt="A Sony BRAVIA TV in a modern living room" class="parallax-img" data-speed="0.15" loading="lazy" /></div>
+      <Seal id="about" class="about__badge" />
+    </div>
+    <div class="about__copy">
+      <p class="eyebrow reveal">About RDL Sony</p>
+      <H class="split">Our mission &amp; <em>vision</em></H>
+      <p class="lead reveal">At RDL Sony, we deliver authentic Sony electronics with unbeatable prices and exceptional customer support in Bangalore.</p>
+      <p class="reveal">RDL Sony, HSR Layout has been a trusted Sony electronics retailer in Bangalore, offering an extensive range of products from 32-inch TVs to impressive 98-inch displays along with superior audio systems. Known for competitive pricing and exceptional customer service, the store embodies a passion for delivering cutting-edge Sony technology, making entertainment accessible and enjoyable for every household in the city.</p>
+      <div class="mvv">
+        <div class="mvv__item reveal"><span>01</span><h3>Mission</h3><p>Provide best-priced authentic Sony electronics with excellent service in Bangalore.</p></div>
+        <div class="mvv__item reveal"><span>02</span><h3>Vision</h3><p>Become Bangalore's trusted leader for Sony TVs and audio systems with unmatched quality.</p></div>
+        <div class="mvv__item reveal"><span>03</span><h3>Values</h3><p>Authenticity, Affordability, Customer Satisfaction, Innovation, Integrity.</p></div>
+      </div>
+    </div>
+  </div>
+</section>

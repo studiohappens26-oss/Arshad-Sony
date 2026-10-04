@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import { store, telLink } from '../lib/site';
+---
+<Base title={`Shipping, Terms & Privacy | ${store.name}, ${store.area}`} description={`Shipping & delivery, terms & conditions and privacy policy for ${store.name}, ${store.area}, Bengaluru.`}>
+  <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Policies</span></nav>
+  <section class="policy" data-section="about">
+    <div class="container">
+      <p class="eyebrow">Useful links</p>
+      <h1 class="policy__h1">Store <em>policies</em></h1>
+      <div class="policy__wrap">
+        <nav class="policy__toc" aria-label="Policies">
+          <a href="#shipping">Shipping &amp; delivery</a>
+          <a href="#terms">Terms &amp; conditions</a>
+          <a href="#privacy">Privacy policy</a>
+        </nav>
+        <div>
+          <article id="shipping">
+            <h2>Shipping &amp; Delivery</h2>
+            <p>Orders are delivered through our own delivery team or registered domestic courier companies. Orders are dispatched within 0–7 business days, or as per the delivery date agreed at the time of order confirmation, and delivery is subject to courier company norms.</p>
+            <p>We are not liable for delays caused by the courier company, and only guarantee to hand over the consignment within 0–7 business days from the date of the order and payment, or as per the delivery date agreed at the time of order confirmation. Delivery of all orders will be made to the address provided by the buyer.</p>
+            <p>Delivery details will be shared with you by phone or WhatsApp. For any queries or issues regarding delivery, call us on <a href={telLink}>{store.phoneDisplay}</a> or <a class="link-arrow" href="/contact/">contact us</a>.</p>
+          </article>
+
+          <article id="terms">
+            <h2>Terms &amp; Conditions</h2>
+            <p>You will get notified when the order is shipped.</p>
+            <p>For the purpose of these Terms and Conditions, the terms "we", "us", and "our" used anywhere on this page shall mean the operator/owner of this website. The terms "you", "your", "user", "visitor" shall mean any natural or legal person who is visiting our website and/or has agreed to purchase from us.</p>
+            <p>Your use of the website and/or purchase from us are governed by the following Terms and Conditions:</p>
+            <ul>
+              <li>The content of the pages of this website is subject to change without notice. Prices shown are indicative; please confirm the current price with the store before purchase.</li>
+              <li>Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness, or suitability of the information and materials found or offered on this website for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or errors, and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.</li>
+              <li>Your use of any information or materials on our website and/or product pages is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services, or information available through our website and/or product pages meet your specific requirements.</li>
+              <li>Our website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance, and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions.</li>
+              <li>All trademarks reproduced in our website that are not the property of, or licensed to, the operator are acknowledged on the website.</li>
+              <li>Unauthorized use of information provided by us shall give rise to a claim for damages and/or be a criminal offense.</li>
+              <li>From time to time, our website may also include links to other websites. These links are provided for your convenience to provide further information. They do not signify that we endorse the website(s), and we have no responsibility for the content of the linked website(s).</li>
+              <li>You may not create a link to our website from another website or document without prior written consent.</li>
+              <li>Any dispute arising out of use of our website and/or any purchase or engagement with us is subject to the laws of India.</li>
+              <li>We shall be under no liability whatsoever in respect of any loss or damage arising directly or indirectly out of the decline of authorization for any transaction, on account of the cardholder having exceeded the preset limit mutually agreed by us with our acquiring bank from time to time.</li>
+            </ul>
+          </article>
+
+          <article id="privacy">
+            <h2>Privacy Policy</h2>
+            <p>At {store.name} we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, disclose, and safeguard your information when you visit our website, send us an enquiry or make purchases from us.</p>
+            <h3>Information we collect</h3>
+            <p><strong>Personal information:</strong> When you send an enquiry or place an order, we may collect personal information such as your name, phone number, email address, and delivery address.</p>
+            <p><strong>Payment information:</strong> Payments are made at the store or through the payment method agreed with you; we only use payment details to complete your purchase.</p>
+            <p><strong>Website usage data:</strong> We may collect non-personal information about your visit to our website, including IP address, browser type, pages visited, and access times, to help improve our services.</p>
+            <h3>How we use your information</h3>
+            <p><strong>Order processing:</strong> We use your personal information to answer your enquiries, process and fulfil your orders, communicate with you about your orders, and provide customer support.</p>
+            <p><strong>Marketing communications:</strong> With your consent, we may send you messages about new products, special offers, or other updates that may interest you. You can opt out of these communications at any time.</p>
+            <p><strong>Improving our services:</strong> We analyze website usage data to understand how visitors interact with our site, optimize our website design, and improve our marketing efforts.</p>
+            <h3>Sharing your information</h3>
+            <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as required by law or to fulfil your order (e.g., sharing with delivery partners).</p>
+            <h3>Security of your information</h3>
+            <p>We implement appropriate technical and organizational measures to protect your personal information from unauthorized access, misuse, disclosure, alteration, or destruction.</p>
+            <h3>Your rights</h3>
+            <p>You have the right to access, correct, or delete your personal information. You may also object to the processing of your information or request a restriction of processing.</p>
+            <h3>Changes to this privacy policy</h3>
+            <p>We may update this Privacy Policy from time to time to reflect changes in our practices and legal requirements. We encourage you to review this policy periodically.</p>
+            <h3>Contact us</h3>
+            <p>If you have any questions about this Privacy Policy or our practices, email <a href={`mailto:${store.email}`}>{store.email}</a>, call <a href={telLink}>{store.phoneDisplay}</a> or <a class="link-arrow" href="/contact/">contact us</a>.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

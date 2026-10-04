@@ -1,0 +1,14 @@
+---
+// Sony Authorised Dealer seal: the ring text rotates, the centre stays upright.
+interface Props { class?: string; id: string; label?: boolean; [key: string]: any }
+const { class: cls = '', id, label = true, ...rest } = Astro.props;
+---
+<div class={`seal ${cls}`} role={label ? 'img' : undefined} aria-label={label ? 'Sony Authorised Dealer badge' : undefined} {...rest}>
+  <svg viewBox="0 0 200 200" class="seal__ring" aria-hidden="true">
+    <defs><path id={`sealRing-${id}`} d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"/></defs>
+    <circle cx="100" cy="100" r="97" class="seal__outer"/>
+    <circle cx="100" cy="100" r="90" class="seal__inner"/>
+    <text><textPath href={`#sealRing-${id}`}>AUTHORISED DEALER • GENUINE SONY PRODUCTS • HSR LAYOUT •</textPath></text>
+  </svg>
+  <div class="seal__core" aria-hidden="true"><b>SONY</b><span>Authorised</span></div>
+</div>

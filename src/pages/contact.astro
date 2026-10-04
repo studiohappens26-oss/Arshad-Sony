@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import Contact from '../components/sections/Contact.astro';
+import Promise from '../components/sections/Promise.astro';
+import { store } from '../lib/site';
+---
+<Base title={`Contact & Directions | ${store.name}, ${store.area}, Bengaluru`}
+  description={`Visit ${store.name} at ${store.streetAddress}, ${store.locality} ${store.postalCode}. Call ${store.phoneDisplay}, open ${store.hoursText}.`}>
+  <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span></nav>
+  <Contact level="h1" />
+  <Promise />
+</Base>

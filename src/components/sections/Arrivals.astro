@@ -1,0 +1,15 @@
+---
+import ProductCard from '../ProductCard.astro';
+import type { Product } from '../../lib/site';
+interface Props { products: Product[] }
+const { products } = Astro.props;
+---
+<section class="section arrivals" data-section="arrivals" data-cursor="tv">
+  <div class="container">
+    <div class="head head--row reveal">
+      <div><p class="eyebrow">New arrivals</p><h2 class="split">Exclusive <em>deals</em></h2></div>
+      <a href="/televisions/" class="link-arrow">View all TVs <span>→</span></a>
+    </div>
+    <div class="grid grid--4">{products.map(p => <ProductCard p={p} />)}</div>
+  </div>
+</section>

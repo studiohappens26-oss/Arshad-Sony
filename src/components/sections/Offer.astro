@@ -1,0 +1,17 @@
+---
+import home from '../../content/settings/home.json';
+import { telLink } from '../../lib/site';
+---
+<section class="offer" data-section="offer">
+  <div class="offer__media"><img src="/images/banners/living-room-tv.webp" alt="" class="parallax-img" data-speed="0.18" loading="lazy" /></div>
+  <div class="offer__shade"></div>
+  <div class="container offer__in">
+    <p class="eyebrow eyebrow--light reveal">{home.offerEyebrow}</p>
+    <h2 class="split">{home.offerTitle} <em>{home.offerTitleAccent}</em></h2>
+    <p class="reveal">{home.offerText}</p>
+    <div class="offer__cta reveal">
+      <a href="/contact/" class="btn btn--rose magnetic">Visit the shop <span aria-hidden="true">→</span></a>
+      <a href={telLink} class="btn btn--line magnetic">Call now</a>
+    </div>
+  </div>
+</section>

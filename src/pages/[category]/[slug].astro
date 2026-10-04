@@ -1,0 +1,87 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Icon from '../../components/Icon.astro';
+import Seal from '../../components/Seal.astro';
+import Promise from '../../components/sections/Promise.astro';
+import Visit from '../../components/sections/Visit.astro';
+import {
+  getProducts, categories, productUrl, inr, specsFor, describe, seoTitle, waLink, enquiryText, telLink, directionsLink, store, type Product
+} from '../../lib/site';
+
+export async function getStaticPaths() {
+  const all = await getProducts();
+  return all.map(p => ({ params: { category: categories[p.category].slug, slug: p.slug }, props: { p, all } }));
+}
+const { p, all } = Astro.props as { p: Product; all: Product[] };
+const cat = categories[p.category];
+const related = all.filter(x => x.category === p.category && x.slug !== p.slug)
+  .sort((a, b) => Math.abs(a.price - p.price) - Math.abs(b.price - p.price)).slice(0, 4);
+const save = p.mrp ? Math.round((1 - p.price / p.mrp) * 100) : 0;
+const site = Astro.site;
+const url = new URL(productUrl(p), site).href;
+const text = describe(p);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org', '@type': 'Product',
+    name: p.name, sku: p.model, mpn: p.model, image: new URL(p.image, site).href, description: text,
+    brand: { '@type': 'Brand', name: 'Sony' },
+    category: cat.single,
+    offers: {
+      '@type': 'Offer', url, priceCurrency: 'INR', price: p.price,
+      availability: 'https://schema.org/InStoreOnly', itemCondition: 'https://schema.org/NewCondition',
+      seller: { '@id': new URL('/#store', site).href }
+    }
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', site).href },
+      { '@type': 'ListItem', position: 2, name: cat.label, item: new URL(`/${cat.slug}/`, site).href },
+      { '@type': 'ListItem', position: 3, name: p.model, item: url }
+    ]
+  }
+];
+---
+<Base title={seoTitle(p)} description={`${text} ${inr(p.price)}. Call ${store.phoneDisplay} or WhatsApp to enquire.`} image={p.image} jsonLd={jsonLd} products={related}>
+  <nav class="crumbs container" aria-label="Breadcrumb">
+    <a href="/">Home</a><span aria-hidden="true">/</span><a href={`/${cat.slug}/`}>{cat.label}</a><span aria-hidden="true">/</span><span aria-current="page">{p.model}</span>
+  </nav>
+  <section class="pdp" data-section={cat.cursor} data-cursor={cat.cursor}>
+    <div class="container pdp__grid">
+      <div class="pdp__media reveal">
+        {save > 0 && <span class="badge badge--save">Save {save}%</span>}
+        <img src={p.image} alt={p.name} width="1000" height="1000" fetchpriority="high" />
+        <Seal id="pdp" class="pdp__seal" />
+      </div>
+      <div class="pdp__info">
+        <p class="eyebrow reveal">{cat.single} · {p.model}</p>
+        <h1 class="pdp__title">{p.name}</h1>
+        <div class="price price--lg reveal"><b>{inr(p.price)}</b>{p.mrp ? <s>{inr(p.mrp)}</s> : null}</div>
+        <p class="pdp__note reveal">Prices can change with offers. Call or WhatsApp us for today's best price.</p>
+        <p class="pdp__desc reveal">{text}</p>
+        <ul class="specs reveal">{specsFor(p).map(([k, v]) => <li><small>{k}</small>{v}</li>)}</ul>
+        <div class="pdp__cta reveal">
+          <a class="btn btn--solid magnetic" href={waLink(enquiryText(p))} target="_blank" rel="noopener"><Icon name="wa" /> Enquire now</a>
+          <a class="btn btn--ghost magnetic" href={telLink}><Icon name="phone" /> Call now</a>
+          <a class="btn btn--ghost magnetic" href={directionsLink} target="_blank" rel="noopener"><Icon name="pin" /> Visit the shop</a>
+        </div>
+        <div class="modal__auth reveal"><img src="/brand/sony-authorised-badge.svg" alt="" width="40" height="40" /> Genuine product from a Sony authorised dealer in {store.area}, {store.city}</div>
+      </div>
+    </div>
+  </section>
+  {related.length > 0 && (
+    <section class="section related" data-section={cat.cursor} data-cursor={cat.cursor}>
+      <div class="container">
+        <div class="head head--row reveal">
+          <div><p class="eyebrow">You may also like</p><h2>More Sony <em>{cat.label.toLowerCase()}</em></h2></div>
+          <a href={`/${cat.slug}/`} class="link-arrow">View all {cat.label.toLowerCase()} <span>→</span></a>
+        </div>
+        <div class="grid grid--4">{related.map(r => <ProductCard p={r} />)}</div>
+      </div>
+    </section>
+  )}
+  <Promise />
+  <Visit topic={`the ${p.name} (${p.model})`} />
+</Base>

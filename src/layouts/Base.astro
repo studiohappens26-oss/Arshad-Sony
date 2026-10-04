@@ -1,0 +1,123 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { store, storeJsonLd, specsFor, inr, productUrl, categories, waLink, enquiryText, type Product } from '../lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  jsonLd?: object[];
+  products?: Product[];
+  loader?: boolean;
+  noindex?: boolean;
+}
+const { title, description, image = '/images/banners/bravia-banner.webp', jsonLd = [], products = [], loader = false, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const ld = [storeJsonLd(Astro.site), ...jsonLd];
+// compact data for the quick-view dialog
+const quick = products.map(p => ({
+  id: p.slug, name: p.name, model: p.model, image: p.image, cat: categories[p.category].single,
+  price: inr(p.price), mrp: p.mrp ? inr(p.mrp) : '', url: productUrl(p), wa: waLink(enquiryText(p)), specs: specsFor(p)
+}));
+---
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <meta name="theme-color" content="#5B0714" />
+  <link rel="icon" href="/brand/logo-mark.svg" type="image/svg+xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={`${store.name}, ${store.area}`} />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="geo.region" content="IN-KA" />
+  <meta name="geo.placename" content={`${store.area}, ${store.city}`} />
+  <link rel="preload" href="/fonts/playfair.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  {ld.map(obj => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+</head>
+<body class={loader ? 'is-loading' : ''}>
+  <a class="skip" href="#main">Skip to content</a>
+
+  {loader && (
+    <div class="loader" id="loader" aria-hidden="true">
+      <div class="loader__inner">
+        <svg class="loader__mark" viewBox="0 0 64 64">
+          <rect x="4" y="6" width="56" height="42" rx="10"/>
+          <path d="M27 48.5 L25 55 M37 48.5 L39 55 M20 56 H44"/>
+          <path d="M17 38 V16 H27.5 a6.5 6.5 0 0 1 0 13 H17 M25 29 L33 38"/>
+          <path d="M37.5 22.5 a6 6 0 0 1 0 9"/><path d="M42 18.5 a11.5 11.5 0 0 1 0 17"/><path d="M46.5 14.5 a17 17 0 0 1 0 25"/>
+        </svg>
+        <div class="loader__word">RDL <span>Sony Centre</span></div>
+        <div class="loader__bar"><i id="loaderBar"></i></div>
+      </div>
+    </div>
+  )}
+
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring">
+      <svg class="ci ci--tv" viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="25" rx="4"/><rect class="ci-screen" x="8.5" y="12.5" width="31" height="18" rx="2"/><path d="M18 39h12M24 34v5"/></svg>
+      <svg class="ci ci--hp" viewBox="0 0 48 48"><path d="M11 29v-5a13 13 0 0 1 26 0v5"/><rect x="8" y="27" width="7" height="12" rx="3"/><rect x="33" y="27" width="7" height="12" rx="3"/><path class="ci-wave w1" d="M4 30a6 6 0 0 0 0 6"/><path class="ci-wave w2" d="M44 30a6 6 0 0 1 0 6"/></svg>
+      <svg class="ci ci--sb" viewBox="0 0 48 48"><rect class="eq e1" x="9" y="14" width="4" height="18" rx="2"/><rect class="eq e2" x="16" y="14" width="4" height="18" rx="2"/><rect class="eq e3" x="23" y="14" width="4" height="18" rx="2"/><rect class="eq e4" x="30" y="14" width="4" height="18" rx="2"/><rect class="eq e5" x="37" y="14" width="4" height="18" rx="2"/><rect x="5" y="35" width="38" height="6" rx="3"/></svg>
+      <span class="cursor__label" id="cursorLabel"></span>
+    </div>
+  </div>
+  <div class="progress" id="progress"></div>
+
+  <Header />
+  <main id="main"><slot /></main>
+  <Footer />
+
+  <a class="wa-fab" href={`https://wa.me/${store.whatsapp}`} target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><Icon name="wa" size={30} /></a>
+  <button class="to-top" id="toTop" aria-label="Back to top"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+  <div class="buddy" id="buddy">
+    <div class="buddy__bubble" id="buddyBubble" role="status" aria-live="polite"></div>
+    <button class="buddy__body" id="buddyBody" aria-label="Rudy, the RDL mascot. Click for a tip"></button>
+  </div>
+
+  {quick.length > 0 && (
+    <>
+      <script type="application/json" id="quickData" set:html={JSON.stringify(quick)} />
+      <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
+        <div class="modal__backdrop" data-close></div>
+        <div class="modal__card">
+          <button class="modal__close" data-close aria-label="Close">×</button>
+          <div class="modal__img"><img id="mImg" alt="" /></div>
+          <div class="modal__body">
+            <p class="eyebrow" id="mCat"></p>
+            <h2 class="modal__title" id="mTitle"></h2>
+            <div class="price price--lg" id="mPrice"></div>
+            <ul class="specs" id="mSpecs"></ul>
+            <div class="modal__auth"><img src="/brand/sony-authorised-badge.svg" alt="" width="40" height="40" /> Genuine product from a Sony authorised dealer</div>
+            <div class="modal__cta">
+              <a class="btn btn--solid" id="mWa" target="_blank" rel="noopener">Enquire now</a>
+              <a class="btn btn--ghost" href={`tel:${store.phone}`}>Call now</a>
+              <a class="link-arrow" id="mUrl" href="#">Full details <span>→</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+
+  <script>
+    import '../scripts/mascot.js';
+    import '../scripts/main.js';
+  </script>
+</body>
+</html>
