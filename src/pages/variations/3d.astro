@@ -160,14 +160,26 @@ const tvCount = all.filter(p => p.category === 'tv').length;
     const back = new THREE.Mesh(new RoundedBoxGeometry(W * 0.62, H * 0.6, 0.12, 4, 0.04), satin);
     back.position.z = -0.07; back.castShadow = true;
     tv.add(body, screen, back);
+    // blade feet: narrow where they meet the TV's bottom edge (never above it or in front of the
+    // screen), flaring out to a wide footprint on the floor
+    const LIFT = 0.26; // gap between the TV's bottom edge and the floor
+    const footShape = new THREE.Shape();
+    footShape.moveTo(-0.028, 0);
+    footShape.lineTo(0.016, 0);
+    footShape.lineTo(0.15, -LIFT);
+    footShape.lineTo(-0.17, -LIFT);
+    footShape.closePath();
+    const footGeo = new THREE.ExtrudeGeometry(footShape, { depth: 0.03, bevelEnabled: true, bevelSize: 0.006, bevelThickness: 0.006, bevelSegments: 3 });
+    footGeo.translate(0, 0, -0.015);
+    footGeo.rotateY(-Math.PI / 2); // profile lies in the depth plane, thickness across
     [-1, 1].forEach(s => {
-      const leg = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.36, 0.34, 2, 0.02), black);
-      leg.position.set(s * W * 0.42, -H / 2 - 0.1, 0.02);
-      leg.rotation.z = s * 0.18;
-      leg.castShadow = true;
-      tv.add(leg);
+      const foot = new THREE.Mesh(footGeo, black);
+      foot.position.set(s * W * 0.4, -H / 2 - 0.004, 0);
+      foot.rotation.z = s * 0.06; // splay out slightly, pivoting at the top
+      foot.castShadow = true;
+      tv.add(foot);
     });
-    tv.position.y = H / 2 + 0.26;
+    tv.position.y = H / 2 + LIFT;
     scene.add(tv);
 
     /* ---------- home theatre: soundbar, subwoofer, rear speakers ---------- */
