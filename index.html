@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RDL Sony Centre · Sony Authorised Dealer in HSR Layout, Bengaluru</title>
+  <meta name="description" content="RDL Sony Centre, HSR Layout: a Sony authorised dealer in Bengaluru for genuine BRAVIA TVs from 32&quot; to 98&quot;, Sony headphones and soundbars at the best prices in Bangalore.">
+  <meta name="theme-color" content="#5B0714">
+  <link rel="icon" href="assets/brand/logo-mark.svg" type="image/svg+xml">
+  <meta property="og:title" content="RDL Sony Centre · HSR Layout">
+  <meta property="og:description" content="Genuine Sony TVs, headphones and soundbars at the best prices in Bangalore. Sony authorised dealer.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/img/banners/bravia-banner.webp">
+  <link rel="preload" href="assets/fonts/playfair.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ElectronicsStore",
+    "name": "RDL Sony Centre, HSR Layout",
+    "description": "Sony authorised dealer for BRAVIA TVs, headphones and soundbars in Bengaluru.",
+    "telephone": "+91-9353099534",
+    "openingHours": "Mo-Su 09:00-18:00",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Star - HSR Layout VGR Essor, 6th Main Rd, opposite Canara Bank, 7th Sector, HSR Layout",
+      "addressLocality": "Bengaluru",
+      "addressRegion": "Karnataka",
+      "postalCode": "560102",
+      "addressCountry": "IN"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Preloader -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <svg class="loader__mark" viewBox="0 0 64 64">
+        <rect x="4" y="6" width="56" height="42" rx="10"/>
+        <path d="M27 48.5 L25 55 M37 48.5 L39 55 M20 56 H44"/>
+        <path d="M17 38 V16 H27.5 a6.5 6.5 0 0 1 0 13 H17 M25 29 L33 38"/>
+        <path d="M37.5 22.5 a6 6 0 0 1 0 9"/><path d="M42 18.5 a11.5 11.5 0 0 1 0 17"/><path d="M46.5 14.5 a17 17 0 0 1 0 25"/>
+      </svg>
+      <div class="loader__word">RDL <span>Sony Centre</span></div>
+      <div class="loader__bar"><i id="loaderBar"></i></div>
+    </div>
+  </div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring">
+      <svg class="ci ci--tv" viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="25" rx="4"/><rect class="ci-screen" x="8.5" y="12.5" width="31" height="18" rx="2"/><path d="M18 39h12M24 34v5"/></svg>
+      <svg class="ci ci--hp" viewBox="0 0 48 48"><path d="M11 29v-5a13 13 0 0 1 26 0v5"/><rect x="8" y="27" width="7" height="12" rx="3"/><rect x="33" y="27" width="7" height="12" rx="3"/><path class="ci-wave w1" d="M4 30a6 6 0 0 0 0 6"/><path class="ci-wave w2" d="M44 30a6 6 0 0 1 0 6"/></svg>
+      <svg class="ci ci--sb" viewBox="0 0 48 48"><rect class="eq e1" x="9" y="14" width="4" height="18" rx="2"/><rect class="eq e2" x="16" y="14" width="4" height="18" rx="2"/><rect class="eq e3" x="23" y="14" width="4" height="18" rx="2"/><rect class="eq e4" x="30" y="14" width="4" height="18" rx="2"/><rect class="eq e5" x="37" y="14" width="4" height="18" rx="2"/><rect x="5" y="35" width="38" height="6" rx="3"/></svg>
+      <span class="cursor__label" id="cursorLabel"></span>
+    </div>
+  </div>
+
+  <div class="progress" id="progress"></div>
+
+  <!-- Announcement -->
+  <div class="topbar">
+    <div class="topbar__in">
+      <span class="topbar__pill"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Sony Authorised Dealer</span>
+      <span class="topbar__msg">Genuine Sony TVs &amp; audio · Best prices in Bangalore · Open 9 am – 6 pm</span>
+      <a class="topbar__call" href="tel:+919353099534">Call 93530 99534</a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header__in">
+      <a href="#top" class="brand" aria-label="RDL Sony Centre home">
+        <img src="assets/brand/logo-mark.svg" alt="" width="46" height="46" class="brand__mark">
+        <span class="brand__text">
+          <strong>RDL</strong>
+          <span>Sony Centre · HSR Layout</span>
+        </span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Primary">
+        <a href="#televisions" data-cursor-label="TVs">Televisions</a>
+        <a href="#headphones">Headphones</a>
+        <a href="#soundbars">Soundbars</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header__end">
+        <a href="#about" class="auth-pill" title="Sony Authorised Dealer">
+          <img src="assets/brand/sony-authorised-badge.svg" alt="" width="34" height="34">
+          <span><b>SONY</b><small>Authorised Dealer</small></span>
+        </a>
+        <a href="https://wa.me/919353099534?text=Hi%20RDL%20Sony%20Centre%2C%20I%27d%20like%20to%20enquire%20about%20a%20Sony%20product." class="btn btn--sm btn--solid magnetic" target="_blank" rel="noopener">Enquire</a>
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><i></i><i></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top" data-section="hero">
+      <div class="hero__glow" data-speed="-0.15"></div>
+      <div class="hero__bigword" data-speed="0.35" aria-hidden="true">BRAVIA</div>
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="eyebrow reveal">Sony Authorised Dealer · HSR Layout, Bengaluru</p>
+          <h1 class="hero__title split">Sony visuals, <em>perfected.</em></h1>
+          <p class="hero__lead reveal">BRAVIA TVs from 32" to 98", premium headphones and room-filling soundbars, all genuine Sony, at the best prices in Bangalore, with expert guidance in store.</p>
+          <div class="hero__cta reveal">
+            <a href="#televisions" class="btn btn--solid magnetic">Explore BRAVIA TVs <span aria-hidden="true">→</span></a>
+            <a href="#contact" class="btn btn--ghost magnetic">Visit the store</a>
+          </div>
+          <ul class="hero__facts reveal">
+            <li><b class="count" data-to="28">0</b><span>Sony models in store</span></li>
+            <li><b>32"–98"</b><span>BRAVIA range</span></li>
+            <li><b>100%</b><span>Genuine products</span></li>
+          </ul>
+        </div>
+        <div class="hero__stage" id="heroStage">
+          <div class="seal seal--hero" data-depth="0.6" role="img" aria-label="Sony Authorised Dealer badge">
+            <svg viewBox="0 0 200 200" class="seal__ring" aria-hidden="true">
+              <defs><path id="sealRing" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"/></defs>
+              <circle cx="100" cy="100" r="97" class="seal__outer"/>
+              <circle cx="100" cy="100" r="90" class="seal__inner"/>
+              <text><textPath href="#sealRing">AUTHORISED DEALER • GENUINE SONY PRODUCTS • HSR LAYOUT •</textPath></text>
+            </svg>
+            <div class="seal__core"><b>SONY</b><span>Authorised</span></div>
+          </div>
+          <div class="layer layer--tv" data-depth="0.15"><img src="assets/img/products/k-55xr70.webp" alt="Sony BRAVIA 7 55-inch Mini LED TV" width="1000" height="1000"></div>
+          <div class="layer layer--hp" data-depth="0.5"><img src="assets/img/products/wh-1000xm5.webp" alt="Sony WH-1000XM5 headphones" width="1000" height="1000"></div>
+          <div class="layer layer--sb" data-depth="0.35"><img src="assets/img/products/ht-s400.webp" alt="Sony HT-S400 soundbar" width="1000" height="1000"></div>
+          <div class="hero__chip chip-a" data-depth="0.7"><span class="dot"></span> BRAVIA 7 · Mini LED</div>
+          <div class="hero__chip chip-b" data-depth="0.9">Noise cancelling · WH-1000XM5</div>
+        </div>
+      </div>
+      <a href="#categories" class="scrollcue" aria-label="Scroll down"><span></span></a>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>✓ Sony Authorised Dealer</span><span>✓ Genuine Sony Products</span><span>✓ BRAVIA 32" to 98"</span><span>✓ Best Prices in Bangalore</span><span>✓ Expert Guidance</span><span>✓ HSR Layout, Bengaluru</span>
+        <span>✓ Sony Authorised Dealer</span><span>✓ Genuine Sony Products</span><span>✓ BRAVIA 32" to 98"</span><span>✓ Best Prices in Bangalore</span><span>✓ Expert Guidance</span><span>✓ HSR Layout, Bengaluru</span>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <section class="section categories" id="categories" data-section="categories">
+      <div class="container">
+        <div class="head reveal">
+          <p class="eyebrow">Shop by category</p>
+          <h2 class="split">Pick your <em>Sony</em> experience</h2>
+        </div>
+        <div class="cat-grid">
+          <a href="#televisions" class="cat tilt" data-cursor="tv" data-cursor-label="Watch">
+            <div class="cat__bg"></div>
+            <div class="cat__mascot" data-mascot="tv"></div>
+            <img src="assets/img/products/k-65xr80.webp" alt="" loading="lazy">
+            <div class="cat__txt"><span class="cat__n">20 models</span><h3>Televisions</h3><p>BRAVIA 2, 3, 7, 8, 9 &amp; XR</p></div>
+          </a>
+          <a href="#headphones" class="cat tilt" data-cursor="hp" data-cursor-label="Listen">
+            <div class="cat__bg"></div>
+            <div class="cat__mascot" data-mascot="hp"></div>
+            <img src="assets/img/products/wh-ult900n.webp" alt="" loading="lazy">
+            <div class="cat__txt"><span class="cat__n">4 models</span><h3>Headphones</h3><p>Studio, ULT WEAR &amp; 1000X</p></div>
+          </a>
+          <a href="#soundbars" class="cat tilt" data-cursor="sb" data-cursor-label="Feel it">
+            <div class="cat__bg"></div>
+            <div class="cat__mascot" data-mascot="sb"></div>
+            <img src="assets/img/products/ht-a3000-51.webp" alt="" loading="lazy">
+            <div class="cat__txt"><span class="cat__n">4 models</span><h3>Soundbars</h3><p>2.1ch to 5.1ch home theatre</p></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- New arrivals -->
+    <section class="section arrivals" data-section="arrivals" data-cursor="tv">
+      <div class="container">
+        <div class="head head--row reveal">
+          <div>
+            <p class="eyebrow">New arrivals</p>
+            <h2 class="split">Exclusive <em>deals</em></h2>
+          </div>
+          <a href="#televisions" class="link-arrow">View all TVs <span>→</span></a>
+        </div>
+        <div class="grid grid--4" id="gridNew"></div>
+      </div>
+    </section>
+
+    <!-- Offer parallax band -->
+    <section class="offer" data-section="offer">
+      <div class="offer__media"><img src="assets/img/banners/living-room-tv.webp" alt="" class="parallax-img" data-speed="0.18" loading="lazy"></div>
+      <div class="offer__shade"></div>
+      <div class="container offer__in">
+        <p class="eyebrow eyebrow--light reveal">Limited time offer!</p>
+        <h2 class="split">Exclusive Sony <em>Electronics Sale</em></h2>
+        <p class="reveal">Hurry! Grab massive deals on Sony TVs &amp; audio systems before time runs out.</p>
+        <a href="#televisions" class="btn btn--rose magnetic reveal">Shop now <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <!-- Televisions -->
+    <section class="section tvs" id="televisions" data-section="tv" data-cursor="tv">
+      <div class="container">
+        <div class="head head--mascot reveal">
+          <div class="head__mascot" data-mascot="tv"></div>
+          <div>
+            <p class="eyebrow">Televisions · BRAVIA</p>
+            <h2 class="split">Big screens, <em>bigger</em> stories</h2>
+            <p class="head__sub">Every Sony TV we stock, from a 32" HD Ready bedroom set to an 85" BRAVIA 9 Mini LED cinema.</p>
+          </div>
+        </div>
+        <div class="toolbar reveal" role="toolbar" aria-label="Filter televisions">
+          <div class="tabs" id="tvTabs">
+            <button class="is-on" data-tab="all">All TVs</button>
+            <button data-tab="highlight">Highlights of the week</button>
+            <button data-tab="trending">Trending styles</button>
+          </div>
+          <div class="filters">
+            <div class="chips" id="sizeChips" aria-label="Screen size"></div>
+            <label class="select"><span class="sr">Sort</span>
+              <select id="tvSort">
+                <option value="price-asc">Price: low to high</option>
+                <option value="price-desc">Price: high to low</option>
+                <option value="size-desc">Screen: largest first</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <p class="result-count" id="tvCount" aria-live="polite"></p>
+        <div class="grid grid--4" id="gridTv"></div>
+      </div>
+    </section>
+
+    <!-- Headphones -->
+    <section class="section hps" id="headphones" data-section="hp" data-cursor="hp">
+      <div class="hps__bg"><img src="assets/img/banners/headphones-neon.webp" alt="" class="parallax-img" data-speed="0.22" loading="lazy"></div>
+      <div class="container">
+        <div class="hps__intro">
+          <div class="head head--mascot head--light reveal">
+            <div class="head__mascot" data-mascot="hp"></div>
+            <div>
+              <p class="eyebrow eyebrow--light">Headphones</p>
+              <h2 class="split">Silence the city. <em>Hear everything.</em></h2>
+              <p class="head__sub">From the studio-standard MDR-7506 to industry-leading noise cancelling on the WH-1000XM5.</p>
+            </div>
+          </div>
+          <div class="waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="grid grid--4 grid--dark" id="gridHp"></div>
+      </div>
+    </section>
+
+    <!-- Soundbars -->
+    <section class="section sbs" id="soundbars" data-section="sb" data-cursor="sb">
+      <div class="container">
+        <div class="sbs__split">
+          <div class="head head--mascot reveal">
+            <div class="head__mascot" data-mascot="sb"></div>
+            <div>
+              <p class="eyebrow">Soundbars &amp; home theatre</p>
+              <h2 class="split">Feel the bass <em>in your bones</em></h2>
+              <p class="head__sub">360 Spatial Sound Mapping, wireless subwoofers and full 5.1 setups that turn your living room into a cinema.</p>
+            </div>
+          </div>
+          <div class="sbs__banner reveal">
+            <img src="assets/img/banners/soundbar-banner.webp" alt="Sony soundbar: experience cinematic sound with powerful bass" class="parallax-img" data-speed="0.12" loading="lazy">
+            <div class="eqbig" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+        <div class="grid grid--4" id="gridSb"></div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section about" id="about" data-section="about">
+      <div class="container about__grid">
+        <div class="about__media reveal">
+          <div class="about__frame"><img src="assets/img/banners/living-room-tv.webp" alt="A Sony BRAVIA TV in a modern living room" class="parallax-img" data-speed="0.15" loading="lazy"></div>
+          <div class="seal about__badge" role="img" aria-label="Sony Authorised Dealer badge">
+            <svg viewBox="0 0 200 200" class="seal__ring" aria-hidden="true">
+              <defs><path id="sealRing2" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"/></defs>
+              <circle cx="100" cy="100" r="97" class="seal__outer"/>
+              <circle cx="100" cy="100" r="90" class="seal__inner"/>
+              <text><textPath href="#sealRing2">AUTHORISED DEALER • GENUINE SONY PRODUCTS • HSR LAYOUT •</textPath></text>
+            </svg>
+            <div class="seal__core"><b>SONY</b><span>Authorised</span></div>
+          </div>
+        </div>
+        <div class="about__copy">
+          <p class="eyebrow reveal">About RDL Sony</p>
+          <h2 class="split">Our mission &amp; <em>vision</em></h2>
+          <p class="lead reveal">At RDL Sony, we deliver authentic Sony electronics with unbeatable prices and exceptional customer support in Bangalore.</p>
+          <p class="reveal">RDL Sony, HSR Layout has been a trusted Sony electronics retailer in Bangalore, offering an extensive range of products from 32-inch TVs to impressive 98-inch displays along with superior audio systems. Known for competitive pricing and exceptional customer service, the store embodies a passion for delivering cutting-edge Sony technology, making entertainment accessible and enjoyable for every household in the city.</p>
+          <div class="mvv">
+            <div class="mvv__item reveal"><span>01</span><h3>Mission</h3><p>Provide best-priced authentic Sony electronics with excellent service in Bangalore.</p></div>
+            <div class="mvv__item reveal"><span>02</span><h3>Vision</h3><p>Become Bangalore's trusted leader for Sony TVs and audio systems with unmatched quality.</p></div>
+            <div class="mvv__item reveal"><span>03</span><h3>Values</h3><p>Authenticity, Affordability, Customer Satisfaction, Innovation, Integrity.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why choose -->
+    <section class="section why" data-section="why">
+      <div class="container">
+        <div class="head head--center reveal">
+          <p class="eyebrow">Why choose RDL Sony?</p>
+          <h2 class="split">Genuine Sony. <em>Honest prices.</em></h2>
+          <p class="head__sub">We offer genuine Sony products, competitive prices, expert guidance, and outstanding customer service in Bangalore.</p>
+        </div>
+        <div class="why__grid">
+          <article class="why__card tilt reveal">
+            <div class="why__icon"><svg viewBox="0 0 48 48"><path d="M24 4l16 6v12c0 10-7 18-16 22C15 40 8 32 8 22V10z"/><path d="M17 24l5 5 10-11"/></svg></div>
+            <h3>Authentic products</h3>
+            <p>We stock only genuine Sony electronics ensuring quality and reliability.</p>
+          </article>
+          <article class="why__card tilt reveal">
+            <div class="why__icon"><svg viewBox="0 0 48 48"><path d="M6 26l20-20h14v14L20 40z"/><circle cx="33" cy="15" r="3"/><path d="M16 26l6 6"/></svg></div>
+            <h3>Best prices</h3>
+            <p>Our pricing beats competitors across Bangalore for all TV sizes and audio systems.</p>
+          </article>
+          <article class="why__card tilt reveal">
+            <div class="why__icon"><svg viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="25" rx="3"/><path d="M18 40h12M24 34v6"/><path d="M14 20h4M22 20h12"/></svg></div>
+            <h3>Variety selection</h3>
+            <p>Choose from a wide range of Sony TVs from 32" to 98" and premium audio systems.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section gallery" data-section="gallery">
+      <div class="container">
+        <div class="head head--row reveal">
+          <div>
+            <p class="eyebrow">Gallery</p>
+            <h2 class="split">Explore our <em>collection</em></h2>
+          </div>
+          <p class="head__sub">Browse our gallery to see the latest Sony TVs and audio systems in action.</p>
+        </div>
+      </div>
+      <div class="gallery__cols">
+        <div class="gcol" data-speed="0.08">
+          <figure data-cursor="tv"><img src="assets/img/banners/bravia-banner.webp" alt="Sony BRAVIA TVs" loading="lazy"></figure>
+          <figure data-cursor="sb"><img src="assets/img/products/sa-d40m2.webp" alt="Sony SA-D40M2 home theatre" loading="lazy"></figure>
+        </div>
+        <div class="gcol" data-speed="-0.06">
+          <figure data-cursor="hp"><img src="assets/img/banners/headphones-neon.webp" alt="Sony headphones" loading="lazy"></figure>
+          <figure data-cursor="tv"><img src="assets/img/products/k-85xr90.webp" alt="Sony BRAVIA 9 85-inch" loading="lazy"></figure>
+        </div>
+        <div class="gcol" data-speed="0.12">
+          <figure data-cursor="sb"><img src="assets/img/banners/soundbar-banner.webp" alt="Sony soundbar" loading="lazy"></figure>
+          <figure data-cursor="hp"><img src="assets/img/banners/headphones-banner.webp" alt="Sony noise cancelling headphones" loading="lazy"></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Promise strip -->
+    <section class="promise" data-section="promise">
+      <div class="container promise__grid">
+        <div class="promise__item reveal"><svg viewBox="0 0 48 48"><path d="M4 14h24v20H4zM28 20h9l7 7v7H28z"/><circle cx="12" cy="36" r="4"/><circle cx="36" cy="36" r="4"/></svg><div><h3>Free delivery</h3><p>Straight to your doorstep.</p></div></div>
+        <div class="promise__item reveal"><svg viewBox="0 0 48 48"><path d="M8 24a16 16 0 1 0 5-11.6"/><path d="M8 8v8h8"/></svg><div><h3>30-day returns</h3><p>Simple, hassle-free returns.</p></div></div>
+        <div class="promise__item reveal"><svg viewBox="0 0 48 48"><rect x="9" y="21" width="30" height="21" rx="3"/><path d="M15 21v-6a9 9 0 0 1 18 0v6"/><circle cx="24" cy="31" r="3"/></svg><div><h3>100% secure payment</h3><p>Always protected and secure.</p></div></div>
+        <div class="promise__item reveal"><svg viewBox="0 0 48 48"><path d="M8 26v-4a16 16 0 0 1 32 0v4"/><rect x="5" y="25" width="8" height="12" rx="3"/><rect x="35" y="25" width="8" height="12" rx="3"/><path d="M39 37c0 4-5 6-11 6"/></svg><div><h3>Friendly support</h3><p>Contact us and we will answer.</p></div></div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="news" data-section="news">
+      <div class="container news__in reveal">
+        <div>
+          <p class="eyebrow eyebrow--light">Join our Sony updates</p>
+          <h2>Never miss a <em>Sony deal</em></h2>
+          <p>Subscribe for the latest deals, new arrivals, and exclusive offers on Sony electronics.</p>
+        </div>
+        <form class="news__form" id="newsForm">
+          <label class="sr" for="newsPhone">WhatsApp number</label>
+          <input id="newsPhone" name="phone" type="tel" inputmode="tel" placeholder="Your WhatsApp number" required pattern="[0-9+ ]{10,15}">
+          <button class="btn btn--rose magnetic" type="submit">Send me offers</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section contact" id="contact" data-section="contact">
+      <div class="container contact__grid">
+        <div class="contact__info">
+          <p class="eyebrow reveal">Contact</p>
+          <h2 class="split">Get in <em>touch</em></h2>
+          <p class="reveal">Contact us for inquiries, purchase assistance, or support. We respond promptly to all messages.</p>
+          <ul class="contact__list">
+            <li class="reveal"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/></svg></span><div><small>Phone</small><a href="tel:+919353099534">+91 93530 99534</a></div></li>
+            <li class="reveal"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><small>Address</small><a href="https://www.google.com/maps/search/?api=1&amp;query=VGR+Essor+6th+Main+Rd+7th+Sector+HSR+Layout+Bengaluru+560102" target="_blank" rel="noopener">Star - HSR Layout VGR Essor, 6th Main Rd, opposite Canara Bank, 7th Sector, HSR Layout, Bengaluru, Karnataka 560102</a></div></li>
+            <li class="reveal"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><small>Office timing</small><span>9 am to 6 pm</span></div></li>
+          </ul>
+          <div class="map reveal">
+            <iframe title="Map to RDL Sony Centre, HSR Layout" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=VGR+Essor,+6th+Main+Rd,+7th+Sector,+HSR+Layout,+Bengaluru+560102&amp;output=embed"></iframe>
+          </div>
+        </div>
+        <form class="contact__form reveal" id="contactForm" novalidate>
+          <div class="contact__mascot" data-mascot="contact"></div>
+          <h3>Send an enquiry</h3>
+          <p class="muted">Your message opens in WhatsApp, ready to send to the store.</p>
+          <div class="field"><input id="cName" name="name" required placeholder=" "><label for="cName">Your name</label></div>
+          <div class="field"><input id="cPhone" name="phone" type="tel" inputmode="tel" required placeholder=" " pattern="[0-9+ ]{10,15}"><label for="cPhone">Phone number</label></div>
+          <div class="field field--select">
+            <select id="cInterest" name="interest">
+              <option>Televisions</option>
+              <option>Headphones</option>
+              <option>Soundbars</option>
+              <option>Something else</option>
+            </select>
+            <label for="cInterest">I'm interested in</label>
+          </div>
+          <div class="field"><textarea id="cMsg" name="message" rows="4" placeholder=" "></textarea><label for="cMsg">Message (model, size, budget…)</label></div>
+          <p class="form-error" id="formError" role="alert"></p>
+          <button class="btn btn--solid btn--block magnetic" type="submit">Send on WhatsApp <span aria-hidden="true">→</span></button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__big" aria-hidden="true">RDL Sony</div>
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <img src="assets/brand/logo-mark.svg" alt="" width="56" height="56">
+        <p class="footer__name">RDL <span>Sony Centre</span></p>
+        <p>We offer a wide range of high-quality products.</p>
+        <div class="footer__auth"><img src="assets/brand/sony-authorised-badge.svg" alt="Sony Authorised Dealer" width="64" height="64"><span>Sony Authorised Dealer<br><small>HSR Layout, Bengaluru</small></span></div>
+      </div>
+      <div><h4>Support</h4><a href="#top">Home</a><a href="#about">About us</a><a href="#contact">Contact us</a></div>
+      <div><h4>Useful links</h4><a href="policies.html#shipping">Shipping policy</a><a href="policies.html#terms">Terms &amp; conditions</a><a href="policies.html#privacy">Privacy policy</a></div>
+      <div><h4>Categories</h4><a href="#televisions">Televisions</a><a href="#soundbars">Soundbars</a><a href="#headphones">Headphones</a></div>
+    </div>
+    <div class="container footer__base">
+      <p>© <span id="year">2026</span> RDL Sony Centre, HSR Layout. All rights reserved.</p>
+      <p class="footer__tm">Sony, BRAVIA and related marks are trademarks of Sony Group Corporation or its affiliates.</p>
+    </div>
+  </footer>
+
+  <!-- Floating elements -->
+  <a href="#about" class="float-badge" aria-label="Sony Authorised Dealer">
+    <div class="seal ">
+            <svg viewBox="0 0 200 200" class="seal__ring" aria-hidden="true">
+              <defs><path id="sealRing3" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"/></defs>
+              <circle cx="100" cy="100" r="97" class="seal__outer"/>
+              <circle cx="100" cy="100" r="90" class="seal__inner"/>
+              <text><textPath href="#sealRing3">AUTHORISED DEALER • GENUINE SONY PRODUCTS • HSR LAYOUT •</textPath></text>
+            </svg>
+            <div class="seal__core"><b>SONY</b><span>Authorised</span></div>
+          </div>
+  </a>
+  <a class="wa-fab" href="https://wa.me/919353099534" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.7a10.7 10.7 0 0 1-5.5-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.7 10.7 0 1 1 16 26.7zm5.9-8c-.3-.2-1.9-1-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.4-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.6.7.6-.1 1.9-.8 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.3z"/></svg>
+  </a>
+  <button class="to-top" id="toTop" aria-label="Back to top"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+  <!-- Mascot companion -->
+  <div class="buddy" id="buddy">
+    <div class="buddy__bubble" id="buddyBubble" role="status" aria-live="polite"></div>
+    <button class="buddy__body" id="buddyBody" aria-label="Rudy, the RDL mascot. Click for a tip"></button>
+  </div>
+
+  <!-- Quick view modal -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card">
+      <button class="modal__close" data-close aria-label="Close">×</button>
+      <div class="modal__img"><img id="mImg" alt=""></div>
+      <div class="modal__body">
+        <p class="eyebrow" id="mCat"></p>
+        <h3 id="mTitle"></h3>
+        <div class="price price--lg" id="mPrice"></div>
+        <ul class="specs" id="mSpecs"></ul>
+        <div class="modal__auth"><img src="assets/brand/sony-authorised-badge.svg" alt="" width="40" height="40"> Genuine product from a Sony authorised dealer</div>
+        <div class="modal__cta">
+          <a class="btn btn--solid magnetic" id="mWa" target="_blank" rel="noopener">Enquire on WhatsApp</a>
+          <a class="btn btn--ghost" href="tel:+919353099534">Call the store</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/mascot.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

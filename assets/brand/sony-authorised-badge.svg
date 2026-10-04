@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Sony Authorised Dealer">
+  <defs>
+    <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6d2b8"/>
+      <stop offset=".5" stop-color="#ebb28c"/>
+      <stop offset="1" stop-color="#a87452"/>
+    </linearGradient>
+    <radialGradient id="mr" cx=".5" cy=".35" r=".7">
+      <stop offset="0" stop-color="#8a1a2c"/>
+      <stop offset="1" stop-color="#3d0410"/>
+    </radialGradient>
+    <path id="ring" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0"/>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="url(#rg)"/>
+  <circle cx="100" cy="100" r="88" fill="#3d0410"/>
+  <text font-family="Inter, Arial, sans-serif" font-size="12.5" font-weight="700" letter-spacing="4.2" fill="#ebb28c">
+    <textPath href="#ring">AUTHORISED DEALER • GENUINE SONY PRODUCTS •</textPath>
+  </text>
+  <circle cx="100" cy="100" r="60" fill="url(#mr)" stroke="url(#rg)" stroke-width="2"/>
+  <text x="100" y="98" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="30" letter-spacing="3" fill="#fff">SONY</text>
+  <rect x="58" y="108" width="84" height="18" rx="9" fill="url(#rg)"/>
+  <text x="100" y="121" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="9.5" letter-spacing="1.6" fill="#3d0410">AUTHORISED</text>
+  <path d="M89 139 l7 7 l14 -14" stroke="#ebb28c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
