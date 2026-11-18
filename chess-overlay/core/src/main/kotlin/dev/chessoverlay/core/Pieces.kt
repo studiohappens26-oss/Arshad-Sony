@@ -32,24 +32,34 @@ class Silhouette(val mask: BooleanArray, val fill: Double, val meanLum: Double) 
     }
 
     companion object {
-        /** Pixels this much brighter than the square's own background count as "piece". */
-        private const val BRIGHTER_THAN_BG = 20
+        /** A pixel whose colour is at least this far (sum of |dR|+|dG|+|dB|) from the square's background is "piece". */
+        private const val COLOUR_DISTANCE = 35
 
         /** Extracts the silhouette of the square at ([x0],[y0]) of side [size]. */
         fun extract(img: Pixels, x0: Int, y0: Int, size: Int): Silhouette {
-            // Background = average of the four corners; pieces never reach them and this also
-            // copes with highlighted squares having a different colour.
+            // Background colour = average of the four corners; pieces never reach them, and this
+            // also copes with Duolingo's tinted "last move" squares.
             val p = (size * 0.03).toInt().coerceAtLeast(2)
             val q = (size * 0.07).toInt().coerceAtLeast(p + 2)
-            var sum = 0
+            var sr = 0; var sg = 0; var sb = 0
             var n = 0
             for ((cx, cy) in listOf(p to p, size - q to p, p to size - q, size - q to size - q)) {
                 for (dy in 0 until q - p) for (dx in 0 until q - p) {
-                    sum += img.lum(x0 + cx + dx, y0 + cy + dy)
+                    val c = img.argb[(y0 + cy + dy) * img.width + x0 + cx + dx]
+                    sr += (c shr 16) and 0xFF; sg += (c shr 8) and 0xFF; sb += c and 0xFF
                     n++
                 }
             }
-            val threshold = sum.toDouble() / n + BRIGHTER_THAN_BG
+            val bgR = sr / n; val bgG = sg / n; val bgB = sb / n
+
+            // Piece pixel = clearly a different colour from the background, but NOT merely a darker
+            // copy of it (that is the drop shadow under every piece). Comparing colours rather than
+            // brightness matters: a dark piece has the same brightness as a tinted square.
+            fun isPiece(argb: Int): Boolean {
+                val r = (argb shr 16) and 0xFF; val g = (argb shr 8) and 0xFF; val b = argb and 0xFF
+                if (Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB) < COLOUR_DISTANCE) return false
+                return !(r <= bgR + 3 && g <= bgG + 3 && b <= bgB + 3)
+            }
 
             val margin = size * 0.04
             val cell = (size - 2 * margin) / GRID
@@ -66,10 +76,9 @@ class Silhouette(val mask: BooleanArray, val fill: Double, val meanLum: Double) 
                 var total = 0
                 for (y in ya until yb) for (x in xa until xb) {
                     total++
-                    val l = img.lum(x0 + x, y0 + y)
-                    if (l > threshold) {
+                    if (isPiece(img.argb[(y0 + y) * img.width + x0 + x])) {
                         lit++
-                        litLum += l
+                        litLum += img.lum(x0 + x, y0 + y)
                         litPixels++
                     }
                 }

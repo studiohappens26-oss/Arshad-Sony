@@ -115,4 +115,24 @@ class ChessVisionTest {
         val empty = Position(arrayOfNulls(64))
         assertTrue(empty.problem()!!.contains("king"))
     }
+
+    // Regression: screenshots from a real phone where Duolingo tints the last-moved square.
+    private fun assertReads(fixture: String, placement: String) {
+        val r = vision.analyze(load("/$fixture.png"))
+        val ok = assertIs<VisionResult.Ok>(r, (r as? VisionResult.Fail)?.reason)
+        assertEquals(false, ok.orientation.whiteAtBottom)
+        assertEquals(placement, ok.position.placement())
+    }
+
+    @Test
+    fun boardFoundWhenHighlightedSquareIsInMiddleColumns() =
+        assertReads("game_after_nf3_highlight_mid", "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R")
+
+    @Test
+    fun readsLightPieceOnHighlightedSquare() =
+        assertReads("game_midgame_highlight_light_knight", "rnbqkbnr/pp6/2p2p2/3pp1pp/4P3/2NP1NB1/PPP2PPP/R2QKB1R")
+
+    @Test
+    fun readsDarkPieceOnHighlightedSquare() =
+        assertReads("game_midgame_highlight_dark_bishop", "rnbqk1nr/pp6/2p2p1b/4p1pp/N2pP3/3P1NB1/PPP2PPP/R2QKB1R")
 }

@@ -24,12 +24,26 @@ object BoardLocator {
         val xs = IntArray(8) { (it * s + 6).toInt().coerceAtMost(img.width - 1) }
 
         fun looksLikeBoardRow(y: Int): Boolean {
-            // Allow one bad column so a highlighted square does not break the whole row.
-            var adjacentOk = 0
-            for (i in 0 until 7) if (img.diff(xs[i], y, xs[i + 1], y) >= 12) adjacentOk++
-            var twoApartOk = 0
-            for (i in 0 until 6) if (img.diff(xs[i], y, xs[i + 2], y) <= 10) twoApartOk++
-            return adjacentOk >= 6 && twoApartOk >= 5
+            // Pick the most "typical" sample among the even columns and among the odd columns as
+            // that parity's reference colour. Comparing every column to its reference (instead of to
+            // its neighbours) means a tinted last-move square, or two of them, cannot break the row.
+            val ref = IntArray(2)
+            for (parity in 0..1) {
+                var bestIdx = parity
+                var bestCount = -1
+                for (i in parity until 8 step 2) {
+                    var count = 0
+                    for (j in parity until 8 step 2) if (img.diff(xs[i], y, xs[j], y) <= 10) count++
+                    if (count > bestCount) { bestCount = count; bestIdx = i }
+                }
+                ref[parity] = bestIdx
+            }
+            // The two parities must be visibly different colours (light vs dark square)...
+            if (img.diff(xs[ref[0]], y, xs[ref[1]], y) < 12) return false
+            // ...and at least 6 of the 8 columns must match their parity's colour.
+            var matching = 0
+            for (i in 0 until 8) if (img.diff(xs[i], y, xs[ref[i % 2]], y) <= 10) matching++
+            return matching >= 6
         }
 
         var bestStart = -1
