@@ -58,6 +58,24 @@ class Position(val squares: Array<Piece?>) {
         "${placement()} ${if (sideToMove == Side.WHITE) 'w' else 'b'} $castling - 0 1"
 
     companion object {
+        /** Parses the piece-placement field of a FEN string. */
+        fun fromPlacement(placement: String): Position {
+            val sq = arrayOfNulls<Piece>(64)
+            val ranks = placement.split('/')
+            require(ranks.size == 8) { "need 8 ranks" }
+            for ((i, row) in ranks.withIndex()) {
+                var file = 0
+                for (ch in row) {
+                    if (ch.isDigit()) file += ch - '0'
+                    else {
+                        sq[(7 - i) * 8 + file] = Piece(if (ch.isUpperCase()) Side.WHITE else Side.BLACK, ch.uppercaseChar())
+                        file++
+                    }
+                }
+            }
+            return Position(sq)
+        }
+
         const val START_PLACEMENT = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
     }
 }

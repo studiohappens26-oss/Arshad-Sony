@@ -33,9 +33,12 @@ class MainActivity : Activity() {
         root.addView(TextView(this).apply {
             text = "1. Tap Start and allow the overlay + screen capture.\n" +
                 "2. Open Duolingo chess.\n" +
-                "3. When it is your move, tap the ♞ button. The best move is drawn on the board.\n\n" +
-                "Long-press the button, or tap the notification, to stop.\n\n" +
-                "For practice, lessons and bot games. Don't use it against real opponents."
+                "3. Tap the grey ♞ button once to turn auto-hints ON (it turns green). From then on the " +
+                "best move for YOUR side (the one at the bottom) is drawn on your turn, and refreshes by " +
+                "itself after every move. While the opponent is thinking, the button shows …\n" +
+                "4. Tap it again to turn hints OFF. Long-press it, or tap the notification, to quit.\n\n" +
+                "Keep the button off the board (drag it). For practice, lessons and bot games. " +
+                "Don't use it against real opponents."
             textSize = 16f
             setPadding(0, pad, 0, pad)
         })

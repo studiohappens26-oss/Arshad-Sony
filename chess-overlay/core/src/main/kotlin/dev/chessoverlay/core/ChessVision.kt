@@ -1,7 +1,13 @@
 package dev.chessoverlay.core
 
 sealed class VisionResult {
-    class Ok(val rect: BoardRect, val orientation: Orientation, val position: Position) : VisionResult()
+    class Ok(
+        val rect: BoardRect,
+        val orientation: Orientation,
+        val position: Position,
+        /** Squares (a1 = 0) tinted by the app to mark the last move. */
+        val highlighted: List<Int>,
+    ) : VisionResult()
     class Fail(val reason: String) : VisionResult()
 }
 
@@ -40,6 +46,7 @@ class ChessVision(private val templates: Templates) {
         for (r in 0..7) for (c in 0..7) bySquare[orientation.squareAt(r, c)] = screen[r * 8 + c]
         val position = Position(bySquare)
         position.problem()?.let { return VisionResult.Fail("Board looks wrong: $it") }
-        return VisionResult.Ok(rect, orientation, position)
+        val tinted = Highlights.detect(img, rect).map { (r, c) -> orientation.squareAt(r, c) }
+        return VisionResult.Ok(rect, orientation, position, tinted)
     }
 }

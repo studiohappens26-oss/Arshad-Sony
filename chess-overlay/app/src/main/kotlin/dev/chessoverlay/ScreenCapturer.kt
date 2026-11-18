@@ -8,6 +8,7 @@ import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.os.Handler
 import android.os.HandlerThread
+import dev.chessoverlay.core.BoardRect
 import dev.chessoverlay.core.Pixels
 
 /**
@@ -58,6 +59,28 @@ class ScreenCapturer(
             }
             val img = latest ?: return null
             return toPixels(img)
+        }
+    }
+
+    /**
+     * Cheap snapshot of just the board area from the newest frame: every [step]-th pixel as 0xRRGGBB.
+     * Used to notice that something moved without converting the whole screen each time.
+     */
+    fun sample(rect: BoardRect, step: Int): IntArray? {
+        synchronized(lock) {
+            val img = latest ?: return null
+            if (rect.left < 0 || rect.top < 0 || rect.left + rect.size > width || rect.top + rect.size > height) return null
+            val plane = img.planes[0]
+            val buf = plane.buffer
+            val n = rect.size / step
+            val out = IntArray(n * n)
+            var k = 0
+            for (j in 0 until n) for (i in 0 until n) {
+                val o = (rect.top + j * step) * plane.rowStride + (rect.left + i * step) * plane.pixelStride
+                out[k++] = ((buf.get(o).toInt() and 0xFF) shl 16) or
+                    ((buf.get(o + 1).toInt() and 0xFF) shl 8) or (buf.get(o + 2).toInt() and 0xFF)
+            }
+            return out
         }
     }
 

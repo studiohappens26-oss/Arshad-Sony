@@ -136,3 +136,63 @@ class ChessVisionTest {
     fun readsDarkPieceOnHighlightedSquare() =
         assertReads("game_midgame_highlight_dark_bishop", "rnbqk1nr/pp6/2p2p1b/4p1pp/N2pP3/3P1NB1/PPP2PPP/R2QKB1R")
 }
+
+class TurnTest {
+    private fun load(path: String): Pixels {
+        val img = ImageIO.read(javaClass.getResourceAsStream(path)!!)
+        val px = IntArray(img.width * img.height)
+        img.getRGB(0, 0, img.width, img.height, px, 0, img.width)
+        return Pixels(img.width, img.height, px)
+    }
+    private val vision by lazy {
+        val names = listOf("B", "K", "N", "P", "Q", "R").flatMap { listOf("light_$it", "dark_$it") }
+        ChessVision(Templates(names.associateWith { load("/templates/$it.png") }))
+    }
+    private fun read(fixture: String) = vision.analyze(load("/$fixture.png")) as VisionResult.Ok
+    private fun names(r: VisionResult.Ok) = r.highlighted.map { Orientation.squareName(it) }
+
+    @Test
+    fun detectsTintedSquares() {
+        assertEquals(emptyList(), names(read("duolingo_start_black_bottom")))
+        assertEquals(listOf("f3"), names(read("game_after_nf3_highlight_mid")))
+        assertEquals(listOf("c3"), names(read("game_midgame_highlight_light_knight")))
+        assertEquals(listOf("h6"), names(read("game_midgame_highlight_dark_bishop")))
+    }
+
+    @Test
+    fun turnFromRealScreenshots() {
+        // The player is black (bottom). Highlight on white's piece -> black to move, and vice versa.
+        fun turn(f: String): Side { val r = read(f); return TurnTracker().update(r.position, r.highlighted, default = Side.BLACK) }
+        assertEquals(Side.WHITE, turn("duolingo_start_black_bottom"))            // start position: white moves first
+        assertEquals(Side.BLACK, turn("game_after_nf3_highlight_mid"))           // white just played Nf3
+        assertEquals(Side.BLACK, turn("game_midgame_highlight_light_knight"))    // white's knight just moved
+        assertEquals(Side.WHITE, turn("game_midgame_highlight_dark_bishop"))     // black just played ...Bh6
+    }
+
+    @Test
+    fun turnFollowsMovesAndIgnoresSelection() {
+        val t = TurnTracker()
+        val start = Position.fromPlacement(Position.START_PLACEMENT)
+        assertEquals(Side.WHITE, t.update(start, emptyList(), Side.BLACK))
+        val e4 = Position.fromPlacement("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR")
+        assertEquals(Side.BLACK, t.update(e4, emptyList(), Side.BLACK))
+        // Same pieces again (player tapped a piece, a square got tinted): turn must not flip.
+        assertEquals(Side.BLACK, t.update(e4, listOf(Orientation.squareIndex("e7")), Side.BLACK))
+        val e5 = Position.fromPlacement("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR")
+        assertEquals(Side.WHITE, t.update(e5, emptyList(), Side.BLACK))
+        // Castling: king and rook of one colour appear -> that colour moved.
+        val before = Position.fromPlacement("r3k2r/8/8/8/8/8/8/R3K2R")
+        val after = Position.fromPlacement("r3k2r/8/8/8/8/8/8/R4RK1")
+        val t2 = TurnTracker(); t2.update(before, emptyList(), Side.WHITE)
+        assertEquals(Side.BLACK, t2.update(after, emptyList(), Side.WHITE))
+    }
+
+    @Test
+    fun frameSignatureNoticesMovesButNotNoise() {
+        val a = IntArray(8100) { 0x1F2A33 }
+        val noisy = a.copyOf().also { for (i in 0 until 8100 step 7) it[i] = 0x202B34 } // tiny colour noise
+        assertEquals(false, FrameSignature.differs(a, noisy))
+        val moved = a.copyOf().also { for (i in 1000 until 1100) it[i] = 0xC0D0E0 }        // a piece appears
+        assertEquals(true, FrameSignature.differs(a, moved))
+    }
+}

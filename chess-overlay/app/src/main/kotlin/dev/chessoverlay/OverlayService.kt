@@ -24,34 +24,56 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import dev.chessoverlay.core.BoardRect
 import dev.chessoverlay.core.CastlingTracker
 import dev.chessoverlay.core.ChessVision
+import dev.chessoverlay.core.FrameSignature
+import dev.chessoverlay.core.Orientation
 import dev.chessoverlay.core.Pixels
 import dev.chessoverlay.core.Side
 import dev.chessoverlay.core.Templates
+import dev.chessoverlay.core.TurnTracker
 import dev.chessoverlay.core.VisionResult
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
- * Shows a draggable "hint" button over every app. Tap it: the screen is captured, the board is
- * read, Stockfish picks a move for the side at the bottom of the board, and an arrow is drawn
- * on top of the game. Long-press the button (or tap the notification) to stop.
+ * A draggable button over every app. Tap it once to turn auto-hints ON, tap again to turn them OFF
+ * (long-press, or tap the notification, to quit).
+ *
+ * While ON, a loop watches the board a few times a second. When something moves it removes the old
+ * arrow, waits for the board to stop changing, reads the position, works out whose turn it is, and
+ * - if it is the player's turn (the side at the bottom) - asks Stockfish and draws the new arrow.
  */
 class OverlayService : Service() {
     private lateinit var wm: WindowManager
     private val main = Handler(Looper.getMainLooper())
-    private val worker = Executors.newSingleThreadExecutor()
+    private val worker = Executors.newSingleThreadScheduledExecutor()
 
     private var projection: MediaProjection? = null
     private var capturer: ScreenCapturer? = null
     private var button: TextView? = null
+    private var buttonBg: GradientDrawable? = null
     private var hintView: HintOverlayView? = null
 
     private var vision: ChessVision? = null
     private var engine: StockfishEngine? = null
-    private val castling = CastlingTracker()
 
-    @Volatile private var busy = false
+    @Volatile private var auto = false
+
+    // ---- state below is only touched on the worker thread ----
+    private class Hint(val rect: BoardRect, val orientation: Orientation, val uci: String, val score: String?)
+
+    private var rect: BoardRect? = null
+    private var prevSample: IntArray? = null
+    private var dirty = false
+    private var lastChangeAt = 0L
+    private var lastAttemptAt = 0L
+    private var failCount = 0
+    private var lastPlacement: String? = null
+    private var lastHint: Hint? = null
+    private var castling = CastlingTracker()
+    private var turns = TurnTracker()
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -90,6 +112,7 @@ class OverlayService : Service() {
 
         addHintLayer(bounds.width(), bounds.height())
         addButton()
+        worker.scheduleWithFixedDelay({ pollSafely() }, 500, POLL_MS, TimeUnit.MILLISECONDS)
         return START_NOT_STICKY
     }
 
@@ -116,16 +139,17 @@ class OverlayService : Service() {
     private fun addButton() {
         val d = resources.displayMetrics.density
         val size = (56 * d).toInt()
+        val bg = GradientDrawable().apply {
+            shape = GradientDrawable.OVAL
+            setStroke((2 * d).toInt(), Color.WHITE)
+        }
+        buttonBg = bg
         val btn = TextView(this).apply {
             text = "♞"
             textSize = 26f
             gravity = Gravity.CENTER
             setTextColor(Color.WHITE)
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.OVAL
-                setColor(Color.argb(220, 46, 160, 90))
-                setStroke((2 * d).toInt(), Color.WHITE)
-            }
+            background = bg
         }
         val lp = WindowManager.LayoutParams(
             size, size,
@@ -161,7 +185,7 @@ class OverlayService : Service() {
                 }
                 MotionEvent.ACTION_UP -> {
                     main.removeCallbacks(longPress)
-                    if (!dragged) requestHint()
+                    if (!dragged) toggleAuto()
                 }
                 MotionEvent.ACTION_CANCEL -> main.removeCallbacks(longPress)
             }
@@ -169,52 +193,176 @@ class OverlayService : Service() {
         }
         wm.addView(btn, lp)
         button = btn
+        setButton("♞", on = false)
     }
 
-    // ---- the hint pipeline ----------------------------------------------------------------
+    /** ON = green, OFF = grey. Text: ♞ ready, … waiting for the opponent / thinking, ! couldn't read the board. */
+    private fun setButton(text: String, on: Boolean) {
+        main.post {
+            button?.text = text
+            buttonBg?.setColor(if (on) Color.argb(230, 46, 160, 90) else Color.argb(200, 90, 100, 105))
+        }
+    }
 
-    private fun requestHint() {
-        if (busy) return
+    // ---- on / off -------------------------------------------------------------------------
+
+    private fun toggleAuto() {
+        if (auto) {
+            auto = false
+            hintView?.clear()
+            setButton("♞", on = false)
+            return
+        }
         val cap = capturer ?: return
-        busy = true
+        auto = true
+        setButton("…", on = true)
         val seq0 = cap.frameCount
-        // Hide our own UI so it is not in the screenshot, then wait for a frame without it.
+        // Hide our own UI for the very first read so it is not in the screenshot.
         hintView?.clear()
         button?.visibility = View.INVISIBLE
-
         worker.execute {
+            resetLoopState()
             try {
                 cap.capture(seq0)
                 Thread.sleep(120)
                 val shot = cap.capture(0L, 100)
                 main.post { button?.visibility = View.VISIBLE }
-                if (shot == null) return@execute toast("No screen frame available")
-                process(shot)
+                if (shot == null) {
+                    toast("No screen frame available")
+                    switchOff()
+                } else {
+                    analyze(shot)
+                }
             } catch (e: Exception) {
                 main.post { button?.visibility = View.VISIBLE }
                 toast("Error: ${e.message}")
-            } finally {
-                busy = false
+                switchOff()
             }
         }
     }
 
-    private fun process(shot: Pixels) {
-        when (val r = vision!!.analyze(shot)) {
-            is VisionResult.Fail -> toast(r.reason)
-            is VisionResult.Ok -> {
-                val me = if (r.orientation.whiteAtBottom) Side.WHITE else Side.BLACK
-                val fen = r.position.fen(me, castling.update(r.position))
+    private fun switchOff() {
+        auto = false
+        main.post { hintView?.clear() }
+        setButton("♞", on = false)
+    }
 
-                val eng = engine ?: StockfishEngine(this).also { e ->
-                    e.start()?.let { err -> toast(err); return }
-                    engine = e
+    // ---- the watch loop (worker thread) ---------------------------------------------------
+
+    private fun resetLoopState() {
+        rect = null; prevSample = null; dirty = false; failCount = 0
+        lastPlacement = null; lastHint = null
+        lastAttemptAt = 0L; lastChangeAt = 0L
+        castling = CastlingTracker(); turns = TurnTracker()
+    }
+
+    private fun pollSafely() {
+        try { poll() } catch (e: Exception) { toast("Error: ${e.message}") }
+    }
+
+    private fun poll() {
+        if (!auto) return
+        val cap = capturer ?: return
+        val now = System.currentTimeMillis()
+
+        val r = rect
+        if (r == null) {
+            // Board not located yet (or lost): keep trying slowly.
+            if (now - lastAttemptAt >= RETRY_MS) {
+                lastAttemptAt = now
+                cap.capture(0L, 100)?.let { analyze(it) }
+            }
+            return
+        }
+
+        val cur = cap.sample(r, SAMPLE_STEP) ?: return
+        val prev = prevSample
+        prevSample = cur
+        if (prev != null && FrameSignature.differs(prev, cur)) {
+            // Something on the board moved: the old arrow is stale, remove it right away.
+            if (!dirty) main.post { hintView?.clear() }
+            dirty = true
+            lastChangeAt = now
+            return
+        }
+        // Wait until the board has stopped changing (a piece may still be sliding), then read it.
+        if (dirty && now - lastChangeAt >= SETTLE_MS) {
+            dirty = false
+            cap.capture(0L, 100)?.let { analyze(it) }
+        }
+    }
+
+    /** Reads the board in [shot] and updates the arrow. Returns false if the board could not be read. */
+    private fun analyze(shot: Pixels): Boolean {
+        val cap = capturer ?: return false
+        when (val r = vision!!.analyze(shot)) {
+            is VisionResult.Fail -> {
+                failCount++
+                if (failCount == 1) toast(r.reason)
+                setButton("!", on = true)
+                main.post { hintView?.clear() }
+                if (failCount >= 3) rect = null            // stop trusting the old location; re-find slowly
+                else { dirty = true; lastChangeAt = System.currentTimeMillis() } // retry once things settle
+                return false
+            }
+            is VisionResult.Ok -> {
+                failCount = 0
+                rect = r.rect
+                val me = if (r.orientation.whiteAtBottom) Side.WHITE else Side.BLACK
+                val castlingRights = castling.update(r.position)
+                val turn = turns.update(r.position, r.highlighted, default = me)
+                val placement = r.position.placement()
+
+                if (turn != me) {
+                    // Opponent to move: nothing to suggest yet.
+                    lastHint = null
+                    lastPlacement = placement
+                    main.post { hintView?.clear() }
+                    setButton("…", on = true)
+                    prevSample = cap.sample(r.rect, SAMPLE_STEP)
+                    return true
                 }
-                val s = eng.bestMove(fen)
-                if (s == null) toast("No legal move (game over?)")
-                else main.post { hintView?.show(r.rect, r.orientation, s.uci, s.scoreText) }
+
+                var hint = lastHint
+                if (hint == null || placement != lastPlacement) {
+                    setButton("…", on = true)
+                    val before = cap.sample(r.rect, SAMPLE_STEP)
+                    val eng = ensureEngine() ?: run { switchOff(); return false }
+                    val s = eng.bestMove(r.position.fen(me, castlingRights))
+                    val after = cap.sample(r.rect, SAMPLE_STEP)
+                    if (before != null && after != null && FrameSignature.differs(before, after)) {
+                        // The board moved while the engine was thinking: this answer is stale.
+                        dirty = true; lastChangeAt = System.currentTimeMillis()
+                        return true
+                    }
+                    hint = s?.let { Hint(r.rect, r.orientation, it.uci, it.scoreText) }
+                }
+                lastPlacement = placement
+                lastHint = hint
+                if (!auto) return true
+                if (hint == null) {
+                    toast("No legal move (game over?)")
+                    main.post { hintView?.clear() }
+                    setButton("♞", on = true)
+                } else {
+                    main.post { hintView?.show(hint.rect, hint.orientation, hint.uci, hint.score) }
+                    setButton("♞", on = true)
+                    // Our own arrow just changed the picture; take the baseline after it has drawn so it
+                    // is not mistaken for a move.
+                    Thread.sleep(150)
+                }
+                prevSample = cap.sample(r.rect, SAMPLE_STEP)
+                return true
             }
         }
+    }
+
+    private fun ensureEngine(): StockfishEngine? {
+        engine?.let { return it }
+        val e = StockfishEngine(this)
+        e.start()?.let { err -> toast(err); return null }
+        engine = e
+        return e
     }
 
     private fun toast(msg: String) {
@@ -246,8 +394,8 @@ class OverlayService : Service() {
             PendingIntent.FLAG_IMMUTABLE,
         )
         val n = Notification.Builder(this, CHANNEL)
-            .setContentTitle("Chess hint overlay is on")
-            .setContentText("Tap the ♞ button to analyse. Tap here to stop.")
+            .setContentTitle("Chess hint overlay is running")
+            .setContentText("Tap the ♞ button to turn auto-hints on/off. Tap here to quit.")
             .setSmallIcon(android.R.drawable.ic_menu_view)
             .setContentIntent(stop)
             .setOngoing(true)
@@ -256,6 +404,7 @@ class OverlayService : Service() {
     }
 
     override fun onDestroy() {
+        auto = false
         main.removeCallbacksAndMessages(null)
         try { button?.let { wm.removeView(it) } } catch (_: Exception) {}
         try { hintView?.let { wm.removeView(it) } } catch (_: Exception) {}
@@ -271,5 +420,10 @@ class OverlayService : Service() {
         const val EXTRA_DATA = "data"
         const val ACTION_STOP = "dev.chessoverlay.STOP"
         private const val CHANNEL = "hints"
+
+        private const val POLL_MS = 250L      // how often the board is checked for movement
+        private const val SETTLE_MS = 450L    // board must be still this long before it is read
+        private const val RETRY_MS = 1500L    // while the board can't be found
+        private const val SAMPLE_STEP = 12    // pixel grid used for the movement check
     }
 }
