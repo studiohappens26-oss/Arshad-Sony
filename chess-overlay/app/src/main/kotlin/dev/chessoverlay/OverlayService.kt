@@ -22,6 +22,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowManager
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import dev.chessoverlay.core.BoardRect
@@ -38,8 +39,9 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 /**
- * A draggable button over every app. Tap it once to turn auto-hints ON, tap again to turn them OFF
- * (long-press, or tap the notification, to quit).
+ * A draggable button over every app. Tap it to open a small menu: turn auto-hints ON/OFF, choose which
+ * side you are playing (default: whoever is at the bottom of the board), or quit. Long-press the button,
+ * or tap the notification, to quit.
  *
  * While ON, a loop watches the board a few times a second. When something moves it removes the old
  * arrow, waits for the board to stop changing, reads the position, works out whose turn it is, and
@@ -60,6 +62,11 @@ class OverlayService : Service() {
     private var engine: StockfishEngine? = null
 
     @Volatile private var auto = false
+    @Volatile private var menuOpen = false          // loop is paused while the menu covers the screen
+    @Volatile private var mySide: Side? = null      // null = Auto: the side at the bottom of the board
+    @Volatile private var lastBottom: Side? = null  // what Auto currently resolves to, for the menu label
+    private var menu: View? = null
+    private var buttonLp: WindowManager.LayoutParams? = null
 
     // ---- state below is only touched on the worker thread ----
     private class Hint(val rect: BoardRect, val orientation: Orientation, val uci: String, val score: String?)
@@ -98,6 +105,11 @@ class OverlayService : Service() {
         }
 
         wm = getSystemService(WindowManager::class.java)
+        mySide = when (getSharedPreferences("prefs", MODE_PRIVATE).getString("side", "auto")) {
+            "white" -> Side.WHITE
+            "black" -> Side.BLACK
+            else -> null
+        }
         val mpm = getSystemService(MediaProjectionManager::class.java)
         val proj = mpm.getMediaProjection(code, data)
         // Android 14 requires a callback to be registered before creating the virtual display.
@@ -162,6 +174,7 @@ class OverlayService : Service() {
             y = (160 * d).toInt()
         }
 
+        buttonLp = lp
         val slop = ViewConfiguration.get(this).scaledTouchSlop
         var downX = 0f; var downY = 0f; var startX = 0; var startY = 0
         var dragged = false
@@ -185,7 +198,7 @@ class OverlayService : Service() {
                 }
                 MotionEvent.ACTION_UP -> {
                     main.removeCallbacks(longPress)
-                    if (!dragged) toggleAuto()
+                    if (!dragged) toggleMenu()
                 }
                 MotionEvent.ACTION_CANCEL -> main.removeCallbacks(longPress)
             }
@@ -201,6 +214,89 @@ class OverlayService : Service() {
         main.post {
             button?.text = text
             buttonBg?.setColor(if (on) Color.argb(230, 46, 160, 90) else Color.argb(200, 90, 100, 105))
+        }
+    }
+
+    // ---- menu -----------------------------------------------------------------------------
+
+    private fun toggleMenu() {
+        if (menu != null) dismissMenu() else showMenu()
+    }
+
+    private fun showMenu() {
+        val d = resources.displayMetrics.density
+        fun px(v: Int) = (v * d).toInt()
+        val panel = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            background = GradientDrawable().apply {
+                cornerRadius = 14 * d
+                setColor(Color.argb(242, 24, 32, 38))
+                setStroke(px(1), Color.argb(120, 255, 255, 255))
+            }
+            setPadding(px(6), px(6), px(6), px(6))
+        }
+        fun title(label: String) = panel.addView(TextView(this).apply {
+            text = label; textSize = 13f; setTextColor(Color.argb(170, 255, 255, 255))
+            setPadding(px(14), px(10), px(14), px(2))
+        })
+        fun row(label: String, selected: Boolean = false, action: () -> Unit) = panel.addView(TextView(this).apply {
+            text = label; textSize = 16f
+            setTextColor(if (selected) Color.rgb(120, 230, 150) else Color.WHITE)
+            setPadding(px(14), px(11), px(14), px(11))
+            setOnClickListener { dismissMenu(); action() }
+        })
+
+        row(if (auto) "■   Turn hints OFF" else "▶   Turn hints ON") { toggleAuto() }
+        title("I AM PLAYING")
+        val bottom = lastBottom?.let { " (bottom = ${if (it == Side.WHITE) "white" else "black"})" } ?: ""
+        row((if (mySide == null) "✓  " else "     ") + "Auto: side at the bottom$bottom", mySide == null) { setSide(null) }
+        row((if (mySide == Side.WHITE) "✓  " else "     ") + "White", mySide == Side.WHITE) { setSide(Side.WHITE) }
+        row((if (mySide == Side.BLACK) "✓  " else "     ") + "Black", mySide == Side.BLACK) { setSide(Side.BLACK) }
+        row("✕   Quit") { stopSelf() }
+        // Tapping anywhere outside the menu closes it.
+        panel.setOnTouchListener { _, e ->
+            if (e.action == MotionEvent.ACTION_OUTSIDE) { dismissMenu(); true } else false
+        }
+
+        val bounds = wm.maximumWindowMetrics.bounds
+        val width = px(270)
+        val btn = buttonLp ?: return
+        val gap = px(8)
+        val x = if (btn.x + px(56) + gap + width <= bounds.width()) btn.x + px(56) + gap
+                else (btn.x - gap - width).coerceAtLeast(0)
+        val y = btn.y.coerceAtMost(bounds.height() - px(340)).coerceAtLeast(0)
+        val lp = WindowManager.LayoutParams(
+            width, WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT,
+        ).apply { gravity = Gravity.TOP or Gravity.START; this.x = x; this.y = y }
+        menuOpen = true     // pause the watcher: the menu may cover the board
+        wm.addView(panel, lp)
+        menu = panel
+    }
+
+    private fun dismissMenu() {
+        menu?.let { try { wm.removeView(it) } catch (_: Exception) {} }
+        menu = null
+        menuOpen = false
+    }
+
+    private fun setSide(side: Side?) {
+        mySide = side
+        getSharedPreferences("prefs", MODE_PRIVATE).edit()
+            .putString("side", when (side) { Side.WHITE -> "white"; Side.BLACK -> "black"; null -> "auto" }).apply()
+        toast("Playing as: " + when (side) { Side.WHITE -> "White"; Side.BLACK -> "Black"; null -> "Auto (bottom of the board)" })
+        if (auto) {
+            // The old arrow was for the other side: drop it and re-read once the picture is clean.
+            main.post { hintView?.clear() }
+            worker.execute {
+                lastHint = null
+                lastPlacement = null
+                if (rect != null) { dirty = true; lastChangeAt = System.currentTimeMillis() }
+            }
         }
     }
 
@@ -261,7 +357,7 @@ class OverlayService : Service() {
     }
 
     private fun poll() {
-        if (!auto) return
+        if (!auto || menuOpen) return
         val cap = capturer ?: return
         val now = System.currentTimeMillis()
 
@@ -308,7 +404,9 @@ class OverlayService : Service() {
             is VisionResult.Ok -> {
                 failCount = 0
                 rect = r.rect
-                val me = if (r.orientation.whiteAtBottom) Side.WHITE else Side.BLACK
+                val bottom = if (r.orientation.whiteAtBottom) Side.WHITE else Side.BLACK
+                lastBottom = bottom
+                val me = mySide ?: bottom
                 val castlingRights = castling.update(r.position)
                 val turn = turns.update(r.position, r.highlighted, default = me)
                 val placement = r.position.placement()
@@ -395,7 +493,7 @@ class OverlayService : Service() {
         )
         val n = Notification.Builder(this, CHANNEL)
             .setContentTitle("Chess hint overlay is running")
-            .setContentText("Tap the ♞ button to turn auto-hints on/off. Tap here to quit.")
+            .setContentText("Tap the ♞ button for the menu. Tap here to quit.")
             .setSmallIcon(android.R.drawable.ic_menu_view)
             .setContentIntent(stop)
             .setOngoing(true)
@@ -406,6 +504,7 @@ class OverlayService : Service() {
     override fun onDestroy() {
         auto = false
         main.removeCallbacksAndMessages(null)
+        dismissMenu()
         try { button?.let { wm.removeView(it) } } catch (_: Exception) {}
         try { hintView?.let { wm.removeView(it) } } catch (_: Exception) {}
         worker.shutdownNow()
