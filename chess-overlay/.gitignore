@@ -1,0 +1,7 @@
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+# 80 MB Stockfish binary: fetched by scripts/fetch-stockfish.sh, never committed
+app/src/main/jniLibs/**/*.so
